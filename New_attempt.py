@@ -1,5 +1,5 @@
+#from SpriteSheet import Spritesheet here when this is called, it will run first
 from Vectors import Vector
-
 try:
     import simplegui
 except ImportError:
@@ -16,7 +16,7 @@ Img_enemy_car_cyan=simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Ene
 Img_enemy_car_yellow=simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Enemy_car_yellow.jpg')
 Img_enemy_car_green=simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Enemy_car_green.jpg')
 
-
+Img_papaya= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Papaya_image.jpg')
 img_cars_array=[Img_enemy_car_blue,Img_enemy_car_white,Img_enemy_car_cyan,Img_enemy_car_yellow,Img_enemy_car_green]
 
 # x values should be updated and not y values by any +ve values
@@ -29,7 +29,7 @@ display_height = 675
 
 # car dimension
 car_width = 140
-car_height = 70
+car_height = 65
 car_speed=3
 
 car_x = 5
@@ -47,6 +47,11 @@ IMG_DIMS = (140,70)
 
 STEP =0.5
 
+papaya_x=0
+papaya_y=0
+papaya_time=False
+
+
 # Global variables
 imgPos = [1000/2, 2*675/3.]
 #imgPos=[250,250]
@@ -59,21 +64,32 @@ class User_Car:
     def __init__(self,pos):
         self.pos=pos
         self.vel=Vector()
+        self.dodged=0
+        self.score=0
+        self.papayas=0
 
     def draw(self,canvas):
         canvas.draw_image(Img_user_Car, IMG_CENTRE, IMG_DIMS, self.pos.getP(), IMG_DIMS)  # check codeskulptur for docs on parameter values
-
+        canvas.draw_text('Speed: (' +str(self.vel.x)+' , '+str(self.vel.y)+') px/s' , (20, 13), 15, 'Black')
+        canvas.draw_text('Dodged: ' + str(self.dodged), [20, 30],15, 'Black')
+        canvas.draw_text('Papayas: '+str(self.papayas), (20, 45), 15, 'Black')
+        canvas.draw_text('Final Score: '+str(self.score), (20, 62), 18, 'Black')
 
     def update(self):
         self.pos.add(self.vel)
+        self.score += 1
 
         if (self.pos.x > display_width):
             self.pos.x = 0
-
-            #dodged += 1  ##refers to number of times the track has been dodged through
-            #score_game += 1
+            self.dodged += 1
             #car_speed += 1 / 20  # accelarate
 
+    def Collisonwall(self):
+
+        if (self.pos.y<75+car_height or self.pos.y+car_height>600):
+            return True
+        else:
+            return False
 
 class Enemy_Car:
 
@@ -92,7 +108,6 @@ class Enemy_Car:
             self.pos.y = random.randrange(100,550)
 
 
-
 class TreeAndWall:
 
     global Img_top_tree
@@ -101,7 +116,6 @@ class TreeAndWall:
         #to sort out why the pic won't draw and the rest of the stuffs
         canvas.draw_line((0, 75), (display_width, 75), 12, 'Green')
         canvas.draw_line((0, 600), (display_width, 600), 12, 'Green')
-
 
     def updateTree(self,canvas):
         global tree_y_top
@@ -155,64 +169,148 @@ class keyboard:
             self.down=False
 
 
-
 class Interaction:
     #CRASH ADN THE OTHER BITS SHOULD BE DONE HERE
     def __init__(self,usr_car,kbd):
         self.user_car=usr_car
         self.keyboard=kbd
-
+        self.carCollision=False
 
     def update(self):
-        if self.keyboard.up and self.keyboard.right:
-            self.user_car.vel.add(Vector((0.05, -0.05)))
-        elif self.keyboard.down and self.keyboard.right:
-            self.user_car.vel.add(Vector((0.05, 0.05)))
-        elif  self.keyboard.left:
-            self.user_car.vel.add(Vector((-0.05, 0)))
-        elif self.keyboard.right:
-            self.user_car.vel.add(Vector((0.05, 0)))
-        else:
-            self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
+       if not obj_user_car.Collisonwall():
+            if self.keyboard.up and self.keyboard.right:
+                self.user_car.vel.add(Vector((0.05, -0.05)))
+            elif self.keyboard.down and self.keyboard.right:
+                self.user_car.vel.add(Vector((0.05, 0.05)))
+            elif  self.keyboard.left:
+                self.user_car.vel.add(Vector((-0.05, 0)))
+            elif self.keyboard.right:
+                self.user_car.vel.add(Vector((0.05, 0)))
+            else:
+                self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
+       else:
+           #call game crash
+           #then game over interface
+            obj_spriteS.collision=True
 
+
+    def CarsCollison(self):
+
+        """
+        #car to enemy (x)
+        #enemy to car (x)
+        #car to enemy - top to bottom crash
+        #car to enemy - bototm to top crash
+        """
+
+        ##To be improved
+        if (obj_user_car.pos.x +car_width >(obj_Enemey_car.pos.x) and obj_user_car.pos.x <obj_Enemey_car.pos.x +car_width) \
+                or (obj_Enemey_car.pos.x+car_width>obj_user_car.pos.x and obj_Enemey_car.pos.x < obj_user_car.pos.x+car_width):
+            if (obj_user_car.pos.y+car_height>obj_Enemey_car.pos.y and obj_user_car.pos.y<obj_Enemey_car.pos.y+car_height) \
+                    or (obj_user_car.pos.y<obj_Enemey_car.pos.y+car_height and obj_Enemey_car.pos.y>obj_user_car.pos.y):
+                print("collison detected")
+                self.carCollision=True
+
+
+
+class Spritesheet:
+   def __init__(self):
+       self.img = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/sprites/explosion-spritesheet.png')
+       self.width = 400
+       self.height = 400
+       self.rows = 9
+       self.columns = 9
+       self.frameWidth = 100
+       self.frameHeight = 100
+       self.frameCentreX = self.frameWidth / 2
+       self.frameCentreY = self.frameHeight / 2
+       self.dimX = 100
+       self.dimY = 100
+       self.frameIndex = [9, 9]  # maximum value
+       self.newPos = (0,0)#Default value
+       self.collision=False
+
+   # canvas.draw_image(image, center_source, width_height_source, center_dest, width_height_dest, rotation)
+   def draw(self, canvas,posX,posY):
+       canvas.draw_image(self.img,
+                         (self.frameWidth * self.frameIndex[0] + self.frameCentreX,
+                          self.frameHeight * self.frameIndex[1] + self.frameCentreY),
+                         (self.frameWidth, self.frameHeight),
+                         ((posX,posY)),
+                         (self.dimX, self.dimY))
+
+   def nextFrame(self):  # value can be passed to change the animation stating point
+       # refers to the current frame index(assigning a value to it initially)
+       self.frameIndex[0] = (self.frameIndex[0] + 1) % self.columns
+       if self.frameIndex[0] == 0:
+           self.frameIndex[1] = (self.frameIndex[1] + 1) % self.rows  # y is referred to by the rows
+
+
+
+# instead of using this the value should be bracketed to mean that it's a single arguement value
 #instances of all types, without brackets it points to a class but doesnt make an instance
-object_User_Car= User_Car(Vector((75,random.randrange(150,550))))
 
-#instead of using this the value should be bracketed to mean that it's a single arguement value
+obj_user_car= User_Car(Vector((75,random.randrange(150,550))))
 
-object_Enemy_Car=Enemy_Car(Vector((random.randrange(0,400),random.randrange(150,450))),Vector((3,0)),img_cars_array[random.randrange(0,5)])
+obj_Enemey_car=Enemy_Car(Vector((random.randrange(0,400),random.randrange(150,450))),Vector((3,0)),img_cars_array[random.randrange(0,5)])
 
+obj_Tree=TreeAndWall()
 
-object_Tree=TreeAndWall()
+obj_Kbd=keyboard()
 
-#object_interaction=interaction()
+obj_Int=Interaction(obj_user_car,obj_Kbd)
 
-object_keyboard=keyboard()
+obj_spriteS=Spritesheet()
 
-object_interaction=Interaction(object_User_Car,object_keyboard)
 
 
 
 #parameter passed in as canvas
 def draw(canvas):
-    object_interaction.update()
-    object_Tree.draw(canvas)
-    object_Tree.updateTree(canvas)
-    object_Enemy_Car.draw(canvas)
-    object_Enemy_Car.update()
-    object_User_Car.draw(canvas)
-    object_User_Car.update()
+    global papaya_time
+
+    obj_Int.update()
+    obj_Tree.draw(canvas)
+    obj_Tree.updateTree(canvas)
+    obj_Enemey_car.draw(canvas)
+    obj_Enemey_car.update()
+    obj_user_car.draw(canvas)
+    obj_user_car.update()
+    obj_Int.CarsCollison()
+
+    if (papaya_time==True):
+        draw_Papaya(canvas)
+
+    if (obj_Int.carCollision==True):
+        obj_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
+        obj_spriteS.nextFrame()
 
 
+    if (obj_spriteS.collision==True):
+        obj_spriteS.draw(canvas,obj_user_car.pos.x,obj_user_car.pos.y)
+        obj_spriteS.nextFrame()
 
+
+def timer_handler():
+    global papaya_y
+    global papaya_x
+    global papaya_time
+    papaya_time=True
+    papaya_x = random.randrange(150, 950)
+    papaya_y = random.randrange(100, 550)
+
+
+def draw_Papaya(canvas):
+    canvas.draw_image(Img_papaya, (25, 25), (50, 50), (papaya_x, papaya_y), (50, 50))
 
 
 
 frame = simplegui.create_frame("A wheel", display_width, display_height)
 frame.set_canvas_background('white')
-#frame.set_mouseclick_handler(Game_instance.mouse)
 frame.set_draw_handler(draw)#automatically passes on the canvas
-frame.set_keydown_handler(object_keyboard.keyDown)
-frame.set_keyup_handler(object_keyboard.keyUp)
+frame.set_keydown_handler(obj_Kbd.keyDown)
+frame.set_keyup_handler(obj_Kbd.keyUp)
+timer = simplegui.create_timer(6000, timer_handler)
+timer.start()
 frame.start()
 
