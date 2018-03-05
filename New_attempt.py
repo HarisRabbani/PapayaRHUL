@@ -49,8 +49,9 @@ STEP =0.5
 
 papaya_x=0
 papaya_y=0
+papaya_size=50
 papaya_time=False
-
+papayas_collected=0
 
 # Global variables
 imgPos = [1000/2, 2*675/3.]
@@ -66,22 +67,21 @@ class User_Car:
         self.vel=Vector()
         self.dodged=0
         self.score=0
-        self.papayas=0
 
     def draw(self,canvas):
         canvas.draw_image(Img_user_Car, IMG_CENTRE, IMG_DIMS, self.pos.getP(), IMG_DIMS)  # check codeskulptur for docs on parameter values
         canvas.draw_text('Speed: (' +str(self.vel.x)+' , '+str(self.vel.y)+') px/s' , (20, 13), 15, 'Black')
         canvas.draw_text('Dodged: ' + str(self.dodged), [20, 30],15, 'Black')
-        canvas.draw_text('Papayas: '+str(self.papayas), (20, 45), 15, 'Black')
+        canvas.draw_text('Papayas: '+str(papayas_collected), (20, 45), 15, 'Black')
         canvas.draw_text('Final Score: '+str(self.score), (20, 62), 18, 'Black')
 
     def update(self):
         self.pos.add(self.vel)
-        self.score += 1
 
         if (self.pos.x > display_width):
             self.pos.x = 0
             self.dodged += 1
+            self.score+=1 + papayas_collected
             #car_speed += 1 / 20  # accelarate
 
     def Collisonwall(self):
@@ -175,6 +175,7 @@ class Interaction:
         self.user_car=usr_car
         self.keyboard=kbd
         self.carCollision=False
+        self.touchPapaya=False
 
     def update(self):
        if not obj_user_car.Collisonwall():
@@ -211,6 +212,18 @@ class Interaction:
                 print("collison detected")
                 self.carCollision=True
 
+    def TouchPapaya(self):
+        global papaya_y
+        global papaya_x
+        global papayas_collected
+
+        if (self.touchPapaya)==False:
+            if ((obj_user_car.pos.x +car_width >papaya_x) and obj_user_car.pos.x <papaya_x +papaya_size):
+                if (papaya_y<obj_user_car.pos.y and papaya_y+papaya_size<obj_user_car.pos.y) or \
+                (obj_user_car.pos.y<papaya_y+papaya_size) and (obj_user_car.pos.y<papaya_y):
+                    print("papaya touch")
+                    papayas_collected+=1
+                    self.touchPapaya=True
 
 
 class Spritesheet:
@@ -250,7 +263,7 @@ class Spritesheet:
 # instead of using this the value should be bracketed to mean that it's a single arguement value
 #instances of all types, without brackets it points to a class but doesnt make an instance
 
-obj_user_car= User_Car(Vector((75,random.randrange(150,550))))
+obj_user_car= User_Car(Vector((75,random.randrange(150,530))))
 
 obj_Enemey_car=Enemy_Car(Vector((random.randrange(0,400),random.randrange(150,450))),Vector((3,0)),img_cars_array[random.randrange(0,5)])
 
@@ -277,11 +290,12 @@ def draw(canvas):
     obj_user_car.draw(canvas)
     obj_user_car.update()
     obj_Int.CarsCollison()
+    obj_Int.TouchPapaya()
 
-    if (papaya_time==True):
+    if (papaya_time==True and obj_Int.touchPapaya==False) :
         draw_Papaya(canvas)
 
-    if (obj_Int.carCollision==True):
+    if (obj_Int.carCollision==True ):
         obj_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
         obj_spriteS.nextFrame()
 
@@ -296,6 +310,7 @@ def timer_handler():
     global papaya_x
     global papaya_time
     papaya_time=True
+    obj_Int.touchPapaya=False #value set back to false, so that papaya can respawn if collected
     papaya_x = random.randrange(150, 950)
     papaya_y = random.randrange(100, 550)
 
@@ -310,7 +325,7 @@ frame.set_canvas_background('white')
 frame.set_draw_handler(draw)#automatically passes on the canvas
 frame.set_keydown_handler(obj_Kbd.keyDown)
 frame.set_keyup_handler(obj_Kbd.keyUp)
-timer = simplegui.create_timer(6000, timer_handler)
+timer = simplegui.create_timer(5000, timer_handler)
 timer.start()
 frame.start()
 
