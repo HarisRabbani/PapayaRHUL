@@ -8,7 +8,7 @@ except ImportError:
 import time
 import random
 
-Img_user_Car = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carUser.png')
+Img_user_Car = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carUserNewPic.png')
 #image enemy cars
 Img_enemy_car_blue = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Enemy_car_blue.png')
 Img_enemy_car_white=simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Enemy_car_white.jpg')
