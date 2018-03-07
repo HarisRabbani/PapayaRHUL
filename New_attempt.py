@@ -1,5 +1,5 @@
 #from SpriteSheet import Spritesheet here when this is called, it will run first
-from Vectors import Vector
+from Vector import Vector
 try:
     import simplegui
 except ImportError:
@@ -260,6 +260,29 @@ class Spritesheet:
 
 
 
+
+
+class Button:
+
+    def __init__(self, image, pos, trigger):
+        self.image = simplegui.load_image(image)
+        self.pos = pos
+        self.trigger = trigger
+        self.clicked = False
+
+    def draw(self, canvas):
+        canvas.draw_image(self.image, (self.image.get_width() / 2, self.image.get_height() / 2),(self.image.get_width(), self.image.get_height()), self.pos,(self.image.get_width(), self.image.get_height()))
+
+    def contains(self, pos):
+        return pos[0] > self.pos[0] - (self.image.get_width() / 2) and pos[0] < self.pos[0] + (self.image.get_width() / 2) and pos[1] > self.pos[1] - (self.image.get_height() / 2) and pos[1] < self.pos[1] + (self.image.get_height() / 2)
+
+    def clickBtn(self):
+        self.clicked = True
+        self.trigger()
+
+
+
+
 # instead of using this the value should be bracketed to mean that it's a single arguement value
 #instances of all types, without brackets it points to a class but doesnt make an instance
 
@@ -275,12 +298,27 @@ obj_Int=Interaction(obj_user_car,obj_Kbd)
 
 obj_spriteS=Spritesheet()
 
+def click(pos):
+    for x in range(0, len(arrayButton)):
+        if(arrayButton[x].contains(pos)):
+            print("button")
+            arrayButton[x].clickBtn()
 
+def draw(canvas):
+    image = simplegui.load_image("https://i.imgur.com/8tYYDrc.png")
+    canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (display_width/2,display_height/2), (image.get_width(), image.get_height()))
+    for x in range(0, len(arrayButton)):
+        arrayButton[x].draw(canvas)
 
+def enter_game():
+    frame.set_draw_handler(drawGame)
 
 #parameter passed in as canvas
-def draw(canvas):
+def drawGame(canvas):
     global papaya_time
+    # global levelImage
+    # image = simplegui.load_image(levelImage)
+    # canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (display_width/2,display_height/2), (image.get_width(), image.get_height()))
 
     obj_Int.update()
     obj_Tree.draw(canvas)
@@ -292,17 +330,17 @@ def draw(canvas):
     obj_Int.CarsCollison()
     obj_Int.TouchPapaya()
 
-    if (papaya_time==True and obj_Int.touchPapaya==False) :
+    if (papaya_time == True and obj_Int.touchPapaya == False):
         draw_Papaya(canvas)
 
-    if (obj_Int.carCollision==True ):
+    if (obj_Int.carCollision == True):
         obj_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
         obj_spriteS.nextFrame()
 
-
-    if (obj_spriteS.collision==True):
-        obj_spriteS.draw(canvas,obj_user_car.pos.x,obj_user_car.pos.y)
+    if (obj_spriteS.collision == True):
+        obj_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
         obj_spriteS.nextFrame()
+
 
 
 def timer_handler():
@@ -318,9 +356,56 @@ def timer_handler():
 def draw_Papaya(canvas):
     canvas.draw_image(Img_papaya, (25, 25), (50, 50), (papaya_x, papaya_y), (50, 50))
 
+def clickMainMenu(pos):
+    for x in range(0, len(arrayButton)):
+        if(arrayButton[x].contains(pos)):
+            arrayButton[x].clicked = True
+            arrayButton[x].clickBtn()
 
+def clickLevelSelect(pos):
+    for x in range(0, len(levelButton)):
+        if(levelButton[x].contains(pos)):
+            levelButton[x].clickBtn()
 
+def enter_help():
+    pass
+
+def level_select(canvas):
+    image = simplegui.load_image("https://i.imgur.com/8tYYDrc.png")
+    canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (display_width/2,display_height/2), (image.get_width(), image.get_height()))
+    level1 = Button("https://i.imgur.com/sZlcBI9.png", (150, 450), enter_level1)
+    level2 = Button("https://i.imgur.com/VWL7wfu.png", (500, 450), enter_level2)
+    level3 = Button("https://i.imgur.com/wVUdTVL.png", (850, 450), enter_level3)
+    global levelButton
+    levelButton = [level1, level2, level3]
+    for x in range(0, len(levelButton)):
+        levelButton[x].draw(canvas)
+
+def enter_level_select():
+    frame.set_mouseclick_handler(clickLevelSelect)
+    frame.set_draw_handler(level_select)
+
+def quit():
+    exit(0)
+
+def enter_level1():
+    # levelImage = ""
+    frame.set_draw_handler(drawGame)
+
+def enter_level2():
+    # levelImage = ""
+    frame.set_draw_handler(drawGame)
+
+def enter_level3():
+    # levelImage = ""
+    frame.set_draw_handler(drawGame)
+
+start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enter_level_select)
+help = Button("https://i.imgur.com/6OfeKop.png", (470, 450), enter_help)
+quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
+arrayButton = [start, help, quit]
 frame = simplegui.create_frame("A wheel", display_width, display_height)
+frame.set_mouseclick_handler(clickMainMenu)
 frame.set_canvas_background('white')
 frame.set_draw_handler(draw)#automatically passes on the canvas
 frame.set_keydown_handler(obj_Kbd.keyDown)
