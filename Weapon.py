@@ -3,7 +3,7 @@ try:
     import simplegui
 except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-
+import math
 
 class Weapon:
 
@@ -29,7 +29,7 @@ class Weapon:
 
     def draw(self, canvas):
             canvas.draw_image(self.sprite, (self.x, self.y), (self.frameWidth, self.frameHeight),
-                              self.pos.getP(), (50, 50))
+                              self.pos.getP(), (50, 50), math.pi/2)
 
     def bounce(self, normal):
             self.vel.reflect(normal)
