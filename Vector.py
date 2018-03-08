@@ -57,6 +57,12 @@ class Vector:
     def sub(self, other):
         return self.add(-other)
 
+    def rotateRad(self, theta):
+        rx = self.x * math.cos(theta) - self.y * math.sin(theta)
+        ry = self.x * math.sin(theta) + self.y * math.cos(theta)
+        self.x, self.y = rx, ry
+        return self
+
     def __sub__(self, other):
         return self.copy().sub(other)
 
