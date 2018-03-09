@@ -12,7 +12,7 @@ import time
 import random
 import math
 
-Img_user_Car = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carUserNewPic.png')
+Img_user_Car = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/User_car_nitro.jpg')
 #image enemy cars
 Img_enemy_car_blue = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Enemy_car_blue.png')
 Img_enemy_car_white=simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Enemy_car_white.jpg')
@@ -23,10 +23,14 @@ Img_enemy_car_green=simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/En
 Img_papaya= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Papaya_image.jpg')
 img_cars_array=[Img_enemy_car_blue,Img_enemy_car_white,Img_enemy_car_cyan,Img_enemy_car_yellow,Img_enemy_car_green]
 
+Img_explosion = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/sprites/explosion-spritesheet.png')
+
 # x values should be updated and not y values by any +ve values
 Img_top_tree = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 Img_bottom_tree = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
+
+missile_url = 'https://i.imgur.com/RVi7F76.png'
 
 display_width = 1000
 display_height = 675
@@ -42,12 +46,20 @@ car_y = (display_height * 0.65)
 tree_w = 605
 tree_h=57
 tree_speed = 7
-tree_y_top=10
-tree_y_bottom=700
+tree_x_top=10
+tree_x_bottom=700
+tree_x1=400
+tree_y1=75
+tree_y2=600
+tree_centre_x = 302
+tree_centre_y = 28
 
+IMG_enmy_DIMS=(140,70)
+Img_enmy_CENTRE=(70,35)
 
-IMG_CENTRE = (70, 35)
-IMG_DIMS = (140,70)
+IMG_usr_DIMS = (125,70)
+IMG_usr_CENTRE = (79.5, 35)
+
 
 STEP =0.5
 
@@ -81,21 +93,14 @@ class User_Car:
         # Car physics code
 
 
-
-
-
     def draw(self,canvas):
-        canvas.draw_image(Img_user_Car, IMG_CENTRE, IMG_DIMS, self.pos.getP(), IMG_DIMS, self.rotation)  # check codeskulptur for docs on parameter values
+        canvas.draw_image(Img_user_Car, IMG_usr_CENTRE, IMG_usr_DIMS, self.pos.getP(), IMG_usr_DIMS, self.rotation)  # check codeskulptur for docs on parameter values
         canvas.draw_text('Speed: (' +str(self.vel.x)+' , '+str(self.vel.y)+') px/s' , (20, 13), 15, 'Black')
         canvas.draw_text('Dodged: ' + str(self.dodged), [20, 30],15, 'Black')
         canvas.draw_text('Papayas: '+str(papayas_collected), (20, 45), 15, 'Black')
         canvas.draw_text('Final Score: '+str(self.score), (20, 62), 18, 'Black')
 
     def update(self):
-
-
-
-
         self.pos.add(self.vel)
 
 
@@ -113,19 +118,12 @@ class User_Car:
             return False
 
 
-
-
     def rotator(self, direction):
         if not direction:
             self.rotation -= 1 / 180
 
-
         if direction:
             self.rotation += 1 / 180
-
-
-
-
 
 class Enemy_Car:
 
@@ -135,7 +133,7 @@ class Enemy_Car:
         self.img=img
 
     def draw(self, canvas):
-        canvas.draw_image(self.img, IMG_CENTRE, IMG_DIMS,self.pos.getP(),IMG_DIMS)  # check codeskulptur for docs on parameter values
+        canvas.draw_image(self.img, Img_enmy_CENTRE, IMG_enmy_DIMS,self.pos.getP(),IMG_enmy_DIMS)  # check codeskulptur for docs on parameter values
 
     def update(self):
         self.pos.add(self.vel)
@@ -148,8 +146,8 @@ class TreeAndWall:
 
     global Img_top_tree
     global weapCollision
-    w1 = Wall((0, 75), (display_width, 75), 12, 'Green', Vector((0, 1)))
-    w2 = Wall((0, 600), (display_width, 600), 12, 'Green', Vector((0, -1)))
+    w1 = Wall((0, tree_y1), (display_width, tree_y1), 12, 'Green', Vector((0, 1)))
+    w2 = Wall((0, tree_y2), (display_width, tree_y2), 12, 'Green', Vector((0, -1)))
 
     weapCollision.addWall(w1)
     weapCollision.addWall(w2)
@@ -178,8 +176,8 @@ class TreeAndWall:
             #car_speed += 1 / 15
 
 
-        canvas.draw_image(Img_top_tree, (302, 28), (605, 57), (tree_y_top, 28), (400, 70))  # 605x57
-        canvas.draw_image(Img_bottom_tree, (302, 28), (605, 57), (tree_y_bottom, 641), (400, 68))  # 605x57
+        canvas.draw_image(Img_top_tree, (tree_centre_x, tree_centre_y), (tree_w, tree_h), (tree_y_top, 28), (tree_x1, tree_y1))  # 605x57
+        canvas.draw_image(Img_bottom_tree, (tree_centre_x, tree_centre_y), (tree_w, tree_h), (tree_y_bottom, 641), (tree_x1, tree_y1))  # 605x57
 
 
 class keyboard:
@@ -224,36 +222,42 @@ class Interaction:
         self.user_car=usr_car
         self.keyboard=kbd
         self.carCollision=False
+        self.missileCollide=False
         self.touchPapaya=False
 
     def update(self):
        if not obj_user_car.Collisonwall():
             if self.keyboard.up:
-                #self.user_car.vel.add(Vector((0.05, -0.05)))
-                self.user_car.rotator(False)
-                self.user_car.rotating = True
+                self.user_car.vel.add(Vector((0.05, -0.05)))
+                #self.user_car.rotator(False)
+                #self.user_car.rotating = True
 
             elif self.keyboard.down:
-                #self.user_car.vel.add(Vector((0.05, 0.05)))
-                self.user_car.rotator(True)
-                self.user_car.rotating = True
+                self.user_car.vel.add(Vector((0.05, 0.05)))
+                #self.user_car.rotator(True)
+                #self.user_car.rotating = True
 
             elif  self.keyboard.left:
                 self.user_car.vel.add(Vector((-0.05, 0)))
-            elif self.keyboard.right:
+            elif self.keyboard.right:#if the right is pressed then add the nitro animation
                 self.user_car.vel.add(Vector((0.05, 0)))
             elif self.keyboard.space:
+
                 url = 'https://i.imgur.com/RVi7F76.png'
-                missile = Weapon(Vector((obj_user_car.pos.x + IMG_DIMS[0], obj_user_car.pos.y)), obj_user_car.vel.copy().normalize(), url, 4, 4)
+                missile = Weapon(Vector((obj_user_car.pos.x + car_width, obj_user_car.pos.y)), Vector(((random.randrange(2,5)),0)), url, 4, 4)
                 weapCollision.addWeapon(missile)
+                obj_Int.missileCollision(missile)
+
+                #obj_missile = Weapon(Vector((obj_user_car.pos.x + IMG_usr_DIMS[0], obj_user_car.pos.y)),Vector((random.randrange(1, 5), 0)), missile_url, 4, 4)
+                #weapCollision.addWeapon(obj_missile)
             else:
                 self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
                 pass
 
-       else:
+       #else:
            #call game crash
            #then game over interface
-            obj_spriteS.collision=True
+           #obj_explosion_spriteS=True
 
 
     def CarsCollison(self):
@@ -270,8 +274,18 @@ class Interaction:
                 or (obj_Enemey_car.pos.x+car_width>obj_user_car.pos.x and obj_Enemey_car.pos.x < obj_user_car.pos.x+car_width):
             if (obj_user_car.pos.y+car_height>obj_Enemey_car.pos.y and obj_user_car.pos.y<obj_Enemey_car.pos.y+car_height) \
                     or (obj_user_car.pos.y<obj_Enemey_car.pos.y+car_height and obj_Enemey_car.pos.y>obj_user_car.pos.y):
-                print("collison detected")
+               # print("collison detected")
                 self.carCollision=True
+
+
+    def missileCollision(self,missile):
+        print("user car "+str(obj_user_car.pos.x))
+        print("missile "+str(missile.pos.x))
+        print("Enemy car "+str(obj_Enemey_car.pos.x ))
+        if (missile.pos.x>obj_Enemey_car.pos.x ):    #and missile.pos.x<obj_Enemey_car.pos.x+car_width):
+            self.missileCollide=True
+            print("missile collison fukind detected")
+
 
     def TouchPapaya(self):
         global papaya_y
@@ -288,19 +302,19 @@ class Interaction:
 
 
 class Spritesheet:
-   def __init__(self):
-       self.img = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/sprites/explosion-spritesheet.png')
+   def __init__(self,img,rows,columns,frameWidth,frameHeight,dimX,dimY,frameI):
+       self.img = img
        self.width = 400
        self.height = 400
-       self.rows = 9
-       self.columns = 9
-       self.frameWidth = 100
-       self.frameHeight = 100
+       self.rows = rows
+       self.columns = columns
+       self.frameWidth = frameWidth
+       self.frameHeight = frameHeight
        self.frameCentreX = self.frameWidth / 2
        self.frameCentreY = self.frameHeight / 2
-       self.dimX = 100
-       self.dimY = 100
-       self.frameIndex = [9, 9]  # maximum value
+       self.dimX = dimX
+       self.dimY = dimY
+       self.frameIndex = frameI # maximum value
        self.newPos = (0,0)#Default value
        self.collision=False
 
@@ -318,10 +332,6 @@ class Spritesheet:
        self.frameIndex[0] = (self.frameIndex[0] + 1) % self.columns
        if self.frameIndex[0] == 0:
            self.frameIndex[1] = (self.frameIndex[1] + 1) % self.rows  # y is referred to by the rows
-
-
-
-
 
 class Button:
 
@@ -342,10 +352,14 @@ class Button:
         self.trigger()
 
 
-
-
 # instead of using this the value should be bracketed to mean that it's a single arguement value
 #instances of all types, without brackets it points to a class but doesnt make an instance
+
+
+
+obj_explosion_spriteS=Spritesheet(Img_explosion,9,9,100,100,100,100,[9,9])
+
+obj_usr_car_spriteS=Spritesheet(Img_user_Car,5,5,139,70,139,70,[4,4])
 
 obj_user_car= User_Car(Vector((75,random.randrange(150,530))))
 
@@ -358,7 +372,7 @@ obj_Kbd=keyboard()
 
 obj_Int=Interaction(obj_user_car,obj_Kbd)
 
-obj_spriteS=Spritesheet()
+
 
 def click(pos):
     for x in range(0, len(arrayButton)):
@@ -371,8 +385,6 @@ def draw(canvas):
     canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (display_width/2,display_height/2), (image.get_width(), image.get_height()))
     for x in range(0, len(arrayButton)):
         arrayButton[x].draw(canvas)
-
-
 
 
 def enter_game():
@@ -394,20 +406,28 @@ def drawGame(canvas):
     obj_user_car.update()
     obj_Int.CarsCollison()
     obj_Int.TouchPapaya()
+    #obj_Int.missileCollision()
 
     weapCollision.draw(canvas)
 
+    if (obj_Kbd.right==True):
+        obj_usr_car_spriteS.draw(canvas,obj_user_car.pos.x,obj_user_car.pos.y)
+        obj_usr_car_spriteS.nextFrame()
 
     if (papaya_time == True and obj_Int.touchPapaya == False):
         draw_Papaya(canvas)
 
     if (obj_Int.carCollision == True):
-        obj_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
-        obj_spriteS.nextFrame()
+        obj_explosion_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
+        obj_explosion_spriteS.nextFrame()
 
-    if (obj_spriteS.collision == True):
-        obj_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
-        obj_spriteS.nextFrame()
+    if (obj_Int.missileCollide==True):
+        obj_explosion_spriteS.draw(canvas, obj_Enemey_car.pos.x, obj_Enemey_car.pos.y)
+        obj_explosion_spriteS.nextFrame()
+
+    if (obj_explosion_spriteS.collision == True):
+        obj_explosion_spriteS.draw(canvas, obj_user_car.pos.x, obj_user_car.pos.y)
+        obj_explosion_spriteS.nextFrame()
 
 
 
@@ -472,7 +492,7 @@ start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enter_level_select
 help = Button("https://i.imgur.com/6OfeKop.png", (470, 450), enter_help)
 quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
-frame = simplegui.create_frame("A wheel", display_width, display_height)
+frame = simplegui.create_frame("Papaya Racers", display_width, display_height)
 frame.set_mouseclick_handler(clickMainMenu)
 frame.set_canvas_background('white')
 frame.set_draw_handler(draw)#automatically passes on the canvas
