@@ -53,6 +53,8 @@ tree_y1=75
 tree_y2=600
 tree_centre_x = 302
 tree_centre_y = 28
+tree_y_top = 75
+tree_y_bottom = 600
 
 IMG_enmy_DIMS=(140,70)
 Img_enmy_CENTRE=(70,35)
@@ -84,7 +86,7 @@ class User_Car:
 
     def __init__(self,pos):
         self.pos=pos
-        self.vel=Vector()
+        self.vel=Vector((1,0))
         self.dodged=0
         self.score=0
         self.heading = self.vel  # Set a variable which represents the heading vector to use as a dot product
@@ -120,10 +122,12 @@ class User_Car:
 
     def rotator(self, direction):
         if not direction:
-            self.rotation -= 1 / 180
+            self.rotation -= 1 / 180*5
+            self.vel.rotateRad(-1/180*5)
 
         if direction:
-            self.rotation += 1 / 180
+            self.rotation += 1 / 180*5
+            self.vel.rotateRad(1/180*5)
 
 class Enemy_Car:
 
@@ -145,6 +149,7 @@ class Enemy_Car:
 class TreeAndWall:
 
     global Img_top_tree
+    global tree_y1, tree_y2
     global weapCollision
     w1 = Wall((0, tree_y1), (display_width, tree_y1), 12, 'Green', Vector((0, 1)))
     w2 = Wall((0, tree_y2), (display_width, tree_y2), 12, 'Green', Vector((0, -1)))
@@ -162,6 +167,7 @@ class TreeAndWall:
     def updateTree(self,canvas):
         global tree_y_top
         global tree_y_bottom
+        global tree_speed
      #  global car_speed  and values cannot be hanged unless it's inherited as a global value
 
         tree_y_top-=tree_speed
@@ -228,19 +234,22 @@ class Interaction:
     def update(self):
        if not obj_user_car.Collisonwall():
             if self.keyboard.up:
-                self.user_car.vel.add(Vector((0.05, -0.05)))
-                #self.user_car.rotator(False)
+                #self.user_car.vel.add(Vector((0.05, -0.05)))
+                self.user_car.rotator(False)
                 #self.user_car.rotating = True
 
             elif self.keyboard.down:
-                self.user_car.vel.add(Vector((0.05, 0.05)))
-                #self.user_car.rotator(True)
+                #self.user_car.vel.add(Vector((0.05, 0.05)))
+                self.user_car.rotator(True)
                 #self.user_car.rotating = True
 
             elif  self.keyboard.left:
                 self.user_car.vel.add(Vector((-0.05, 0)))
             elif self.keyboard.right:#if the right is pressed then add the nitro animation
-                self.user_car.vel.add(Vector((0.05, 0)))
+                if self.user_car.vel.length() > 1.5:
+                    pass
+                else:
+                    self.user_car.vel.add(Vector((0.05, 0)))
             elif self.keyboard.space:
 
                 url = 'https://i.imgur.com/RVi7F76.png'
@@ -251,7 +260,7 @@ class Interaction:
                 #obj_missile = Weapon(Vector((obj_user_car.pos.x + IMG_usr_DIMS[0], obj_user_car.pos.y)),Vector((random.randrange(1, 5), 0)), missile_url, 4, 4)
                 #weapCollision.addWeapon(obj_missile)
             else:
-                self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
+                #self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
                 pass
 
        #else:
@@ -363,7 +372,7 @@ obj_usr_car_spriteS=Spritesheet(Img_user_Car,5,5,139,70,139,70,[4,4])
 
 obj_user_car= User_Car(Vector((75,random.randrange(150,530))))
 
-obj_Enemey_car=Enemy_Car(Vector((random.randrange(0,400),random.randrange(150,450))),Vector((3,0)),img_cars_array[random.randrange(0,5)])
+obj_Enemey_car=Enemy_Car(Vector((random.randrange(0,400),random.randrange(150,450))),Vector((1,0)),img_cars_array[random.randrange(0,5)])
 
 
 obj_Tree=TreeAndWall()
@@ -392,7 +401,7 @@ def enter_game():
 
 #parameter passed in as canvas
 def drawGame(canvas):
-    global papaya_time
+    global papaya_time, tree_speed
     # global levelImage
     # image = simplegui.load_image(levelImage)
     # canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (display_width/2,display_height/2), (image.get_width(), image.get_height()))
@@ -404,6 +413,7 @@ def drawGame(canvas):
     obj_Enemey_car.update()
     obj_user_car.draw(canvas)
     obj_user_car.update()
+    tree_speed = max([obj_user_car.vel.x+2, obj_Enemey_car.vel.x+2])
     obj_Int.CarsCollison()
     obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
