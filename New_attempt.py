@@ -40,8 +40,7 @@ car_width = 140
 car_height = 65
 car_speed=3
 
-car_x = 5
-car_y = (display_height * 0.65)
+
 
 tree_w = 605
 tree_h=57
@@ -84,7 +83,7 @@ imgRot = 0
 
 class User_Car:
 
-    def __init__(self,pos):
+    def __init__(self, pos):
         self.pos=pos
         self.vel=Vector((1,0))
         self.dodged=0
@@ -103,14 +102,13 @@ class User_Car:
         canvas.draw_text('Final Score: '+str(self.score), (20, 62), 18, 'Black')
 
     def update(self):
-        self.pos.add(self.vel)
+        #self.pos.add(self.vel)
+        self.pos.y += self.vel.y
 
-
-        if (self.pos.x > display_width):
+        if self.pos.x > display_width:
             self.pos.x = 0
             self.dodged += 1
-            self.score+=1 + papayas_collected
-            #car_speed += 1 / 20  # accelarate
+            self.score += 1 + papayas_collected
 
     def Collisonwall(self):
 
@@ -246,7 +244,7 @@ class Interaction:
             elif  self.keyboard.left:
                 self.user_car.vel.add(Vector((-0.05, 0)))
             elif self.keyboard.right:#if the right is pressed then add the nitro animation
-                if self.user_car.vel.length() > 1.5:
+                if self.user_car.vel.length() > 10:
                     pass
                 else:
                     self.user_car.vel.add(Vector((0.05, 0)))
@@ -413,7 +411,7 @@ def drawGame(canvas):
     obj_Enemey_car.update()
     obj_user_car.draw(canvas)
     obj_user_car.update()
-    tree_speed = max([obj_user_car.vel.x+2, obj_Enemey_car.vel.x+2])
+    tree_speed = obj_user_car.vel.x
     obj_Int.CarsCollison()
     obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
