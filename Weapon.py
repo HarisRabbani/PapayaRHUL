@@ -13,7 +13,7 @@ class Weapon(Sprite):
             super().__init__(image, row, column)
             self.pos = pos
             self.vel = vel
-            self.offsetL = self.pos.
+
 
     def draw(self, canvas):
             canvas.draw_image(self.img, (self.x, self.y), (self.frameWidth, self.frameHeight),
