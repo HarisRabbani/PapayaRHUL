@@ -8,6 +8,7 @@ from UserCar import UserCar
 from Tree import Tree
 from Sprite import Sprite
 from Interaction import Interaction
+from Interaction import Interaction
 import random
 
 try:
@@ -34,74 +35,14 @@ car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.p
 explosionSprite = Sprite(explosionSheet, 9, 9)
 
 userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5)
-tree1 = Tree(treeImg, 50, DISPLAYW)
-tree2 = Tree(treeImg, 600, DISPLAYW)
-w1 = Wall((0, 50), (DISPLAYW, 50), 12, 'Green', Vector((0, 1)))
+tree1 = Tree(treeImg, 0+treeImg.get_height()/2, DISPLAYW)
+tree2 = Tree(treeImg, DISPLAYH-treeImg.get_height()/2, DISPLAYW)
+w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 
 kbd = Keyboard()
 
 #interaction = Interaction(userCar, kbd)
-
-class Interaction:
-
-    def __init__(self, usr_car, kbd, tree):
-        self.user_car = usr_car
-        self.keyboard = kbd
-        self.tree = tree
-        self.carCollision = False
-        self.missileCollide = False
-        self.touchPapaya = False
-
-    def update(self):
-        # Check for wall collision first
-            if self.keyboard.up:
-                # self.user_car.vel.add(Vector((0.05, -0.05)))
-                self.user_car.rotator(False)
-                print("HELLO")
-                # self.user_car.rotating = True
-
-            elif self.keyboard.down:
-                # self.user_car.vel.add(Vector((0.05, 0.05)))
-                self.user_car.rotator(True)
-                # self.user_car.rotating = True
-
-            elif self.keyboard.left:
-                self.user_car.vel.add(Vector((-0.05, 0)))
-                for i in self.tree:
-                    i.vel.add(Vector((0.05, 0)))
-            elif self.keyboard.right:
-
-                # if the right is pressed then add the nitro animation
-                if self.user_car.vel.length() > 10:
-                    pass
-                else:
-                    self.user_car.vel.add(Vector((0.05, 0)))
-                    self.user_car.animate = True
-                    for i in self.tree:
-                        i.vel.sub(Vector((0.05, 0)))
-
-            elif self.keyboard.space:
-
-                url = 'https://i.imgur.com/RVi7F76.png'
-                #missile = Weapon(Vector((self.user_car.pos.x + self.user_car., self.user_car.pos.y)),
-                 #                Vector(((random.randrange(2, 5)), 0)), url, 4, 4)
-
-
-                # obj_missile = Weapon(Vector((self.user_car.pos.x + IMG_usr_DIMS[0], self.user_car.pos.y)),Vector((random.randrange(1, 5), 0)), missile_url, 4, 4)
-                # weapCollision.addWeapon(obj_missile)
-            else:
-                # self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
-                self.user_car.animate = False
-                pass
-
-        # else:
-        # call game crash
-        # then game over interface
-        # obj_explosion_spriteS=True
-
-
-
 
 
 
@@ -122,7 +63,7 @@ def enter_game():
     frame.set_draw_handler(drawGame)
 
 
-interaction = Interaction(userCar, kbd, [tree1, tree2])
+interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2)
 
 #parameter passed in as canvas
 def drawGame(canvas):
