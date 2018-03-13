@@ -2,6 +2,12 @@
 from Vector import Vector
 from UserCar import UserCar
 from Weapon import Weapon
+from WeaponCollision import WeaponCollision
+
+try:
+    import simplegui
+except ImportError:
+    import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import random
 
 class Interaction:
@@ -16,6 +22,10 @@ class Interaction:
         self.missileCollide = False
         self.touchPapaya = False
         self.offScreen = False  # WHEN TRUE - GAME SHOULD END
+        self.weapColl = WeaponCollision()
+        self.weapColl.addWall(w1)
+        self.weapColl.addWall(w2)
+
 
     def update(self):
         # Check for wall collision first
@@ -40,10 +50,12 @@ class Interaction:
                 for i in self.trees:
                     i.vel.add(Vector((0.05, 0)))
             if self.kbd.space:
-                pass
+                image = simplegui.load_image('https://i.imgur.com/RVi7F76.png')
+                missile = Weapon(Vector((self.uCar.pos.x + self.uCar.frameWidth/2, self.uCar.pos.y)), Vector((5, self.uCar.vel.y)), image, 4, 4)
+                self.weapColl.addWeapon(missile)
+
 
             # For all userCar corners and offsets. Check with all other ones.
-
             for i in self.uCar.corners:
                 for j in self.uCar.offsets:
                     if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:

@@ -10,9 +10,10 @@ from Sprite import Sprite
 class Weapon(Sprite):
 
     def __init__(self, pos, vel, image, row, column):
-            Sprite.__init__(image, row, column)
+            super().__init__(image, row, column)
             self.pos = pos
             self.vel = vel
+            self.offsetL = self.pos.
 
     def draw(self, canvas):
             canvas.draw_image(self.img, (self.x, self.y), (self.frameWidth, self.frameHeight),

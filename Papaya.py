@@ -85,6 +85,8 @@ def drawGame(canvas):
     userCar.draw(canvas)
     w1.draw(canvas)
     w2.draw(canvas)
+    interaction.weapColl.update()
+    interaction.weapColl.draw(canvas)
 
 
 
