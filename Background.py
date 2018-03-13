@@ -8,15 +8,14 @@ from Sprite import Sprite
 
 class Background:
 
-    def __init__(self, img, y, canvasW):
+    def __init__(self, img, pos, canvasW):
         self.img = img
         self.width = img.get_width()
         self.height = img.get_height()
         self.vel = Vector((-1, 0))
         self.canvasW = canvasW
         self.x = canvasW
-        self.y = y
-        self.pos = Vector((self.x, self.y))
+        self.pos = pos
 
     def update(self):
         if self.pos.x < 0 - self.width:

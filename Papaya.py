@@ -138,12 +138,10 @@ def drawGame(canvas):
     #obj_Int.missileCollision()
     bg.update()
     interaction.update()
-    if not trees:
-        tree1.update()
-        tree2.update()
-        tree1.draw(canvas)
-        tree2.draw(canvas)
-
+    tree1.update()
+    tree2.update()
+    tree1.draw(canvas)
+    tree2.draw(canvas)
     userCar.update()
     bg.draw(canvas)
     userCar.draw(canvas)
@@ -220,7 +218,7 @@ def enter_level2():
 def enter_level3():
     bgImage = simplegui.load_image("https://i.imgur.com/KzqV3D9.jpg")
     global bg
-    bg = Background(bgImage, 675 / 2, DISPLAYW)
+    bg = Background(bgImage, (Vector((0,675 / 2))), DISPLAYW)
     trees = True
     frame.set_draw_handler(drawGame)
 
