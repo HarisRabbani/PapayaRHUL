@@ -40,7 +40,6 @@ tree2 = Tree(treeImg, 600, DISPLAYW)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 trees = False
-
 kbd = Keyboard()
 
 #interaction = Interaction(userCar, kbd)
@@ -205,24 +204,24 @@ def quit():
     exit(0)
 
 def enter_level1():
-    bgImage = simplegui.load_image("https://i.imgur.com/gaa424V.jpg")
+    bgImage = simplegui.load_image("https://i.imgur.com/0uEOfSA.jpg")
     global bg
     bg = Background(bgImage, 675 / 2, DISPLAYW)
-    level1Selected = True
+    trees = True
     frame.set_draw_handler(drawGame)
 
 def enter_level2():
     bgImage = simplegui.load_image("https://i.imgur.com/Yw5WSQy.jpg")
     global bg
     bg = Background(bgImage, 675 / 2, DISPLAYW)
-    level1Selected = True
+    trees = True
     frame.set_draw_handler(drawGame)
 
 def enter_level3():
-    bgImage = simplegui.load_image("https://i.imgur.com/dkge2uR.jpg")
+    bgImage = simplegui.load_image("https://i.imgur.com/KzqV3D9.jpg")
     global bg
     bg = Background(bgImage, 675 / 2, DISPLAYW)
-    level1Selected = True
+    trees = True
     frame.set_draw_handler(drawGame)
 
 
