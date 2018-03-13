@@ -8,6 +8,7 @@ from UserCar import UserCar
 from Tree import Tree
 from Sprite import Sprite
 from Interaction import Interaction
+from Background import Background
 import random
 
 try:
@@ -28,7 +29,7 @@ explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/s
 # x values should be updated and not y values by any +ve values
 treeImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
-
+levelImage = ""
 
 
 explosionSprite = Sprite(explosionSheet, 9, 9)
@@ -36,8 +37,9 @@ explosionSprite = Sprite(explosionSheet, 9, 9)
 userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5)
 tree1 = Tree(treeImg, 50, DISPLAYW)
 tree2 = Tree(treeImg, 600, DISPLAYW)
-w1 = Wall((0, 50), (DISPLAYW, 50), 12, 'Green', Vector((0, 1)))
+w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
+trees = False
 
 kbd = Keyboard()
 
@@ -135,12 +137,16 @@ def drawGame(canvas):
    #obj_Int.CarsCollison()
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
+    bg.update()
     interaction.update()
-    tree1.update()
-    tree2.update()
+    if not trees:
+        tree1.update()
+        tree2.update()
+        tree1.draw(canvas)
+        tree2.draw(canvas)
+
     userCar.update()
-    tree1.draw(canvas)
-    tree2.draw(canvas)
+    bg.draw(canvas)
     userCar.draw(canvas)
     w1.draw(canvas)
     w2.draw(canvas)
@@ -199,15 +205,24 @@ def quit():
     exit(0)
 
 def enter_level1():
-    # levelImage = ""
+    bgImage = simplegui.load_image("https://i.imgur.com/gaa424V.jpg")
+    global bg
+    bg = Background(bgImage, 675 / 2, DISPLAYW)
+    level1Selected = True
     frame.set_draw_handler(drawGame)
 
 def enter_level2():
-    # levelImage = ""
+    bgImage = simplegui.load_image("https://i.imgur.com/Yw5WSQy.jpg")
+    global bg
+    bg = Background(bgImage, 675 / 2, DISPLAYW)
+    level1Selected = True
     frame.set_draw_handler(drawGame)
 
 def enter_level3():
-    # levelImage = ""
+    bgImage = simplegui.load_image("https://i.imgur.com/dkge2uR.jpg")
+    global bg
+    bg = Background(bgImage, 675 / 2, DISPLAYW)
+    level1Selected = True
     frame.set_draw_handler(drawGame)
 
 
