@@ -211,7 +211,7 @@ def enter_level1():
     frame.set_draw_handler(drawGame)
 
 def enter_level2():
-    bgImage = simplegui.load_image("https://i.imgur.com/Yw5WSQy.jpg")
+    bgImage = simplegui.load_image("https://i.imgur.com/1uBtqqe.jpg")
     global bg
     bg = Background(bgImage, 675 / 2, DISPLAYW)
     trees = True

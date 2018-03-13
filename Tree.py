@@ -19,7 +19,7 @@ class Tree:
 
     def update(self):
         if self.pos.x < 0 - self.width:
-            self.pos.x = self.canvasW + self.width
+            self.pos.x = 0
 
         self.pos.add(self.vel)
 
