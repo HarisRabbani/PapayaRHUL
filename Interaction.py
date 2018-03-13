@@ -15,6 +15,7 @@ class Interaction:
     def __init__(self, usr_car, kbd, trees, w1, w2):
         self.uCar = usr_car
         self.w1 = w1
+        self.bg = None
         self.w2 = w2
         self.trees = trees
         self.kbd = kbd
@@ -25,6 +26,9 @@ class Interaction:
         self.weapColl = WeaponCollision()
         self.weapColl.addWall(w1)
         self.weapColl.addWall(w2)
+
+    def passBack(self, bg):
+        self.bg = bg
 
 
     def update(self):
@@ -40,6 +44,7 @@ class Interaction:
                 else:
                    # self.uCar.vel.add(Vector((0.05, 0)))
                     self.uCar.animate = True
+                    self.bg.vel.sub(Vector((0.05, 0)))
                     for i in self.trees:
                         i.vel.sub(Vector((0.05, 0)))
             else:
@@ -47,6 +52,7 @@ class Interaction:
 
             if self.kbd.left:
               #  self.uCar.vel.add(Vector((-0.05, 0)))
+                self.bg.vel.add(Vector((0.05, 0)))
                 for i in self.trees:
                     i.vel.add(Vector((0.05, 0)))
             if self.kbd.space:

@@ -9,7 +9,7 @@ class UserCar(Sprite):
         self.pos.x = self.pos.x + self.frameWidth/2
         super().defineOffsets(pos)
         super().defineCorners(pos)
-        self.vel = Vector((0, 0))
+        self.vel = Vector((5, 0))
         self.dodged = 0
         self.score = 0
         self.heading = self.vel  # Set a variable which represents the heading vector to use as a dot product

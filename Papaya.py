@@ -9,6 +9,7 @@ from Tree import Tree
 from Sprite import Sprite
 from Interaction import Interaction
 from Interaction import Interaction
+from Background import Background
 import random
 
 try:
@@ -39,6 +40,8 @@ tree1 = Tree(treeImg, 0+treeImg.get_height()/2, DISPLAYW)
 tree2 = Tree(treeImg, DISPLAYH-treeImg.get_height()/2, DISPLAYW)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
+bg = None
+levelImage = ""
 
 kbd = Keyboard()
 
@@ -76,6 +79,8 @@ def drawGame(canvas):
    #obj_Int.CarsCollison()
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
+    bg.update()
+    bg.draw(canvas)
     interaction.update()
     tree1.update()
     tree2.update()
@@ -142,15 +147,27 @@ def quit():
     exit(0)
 
 def enter_level1():
-    # levelImage = ""
+    bgImage = simplegui.load_image("https://i.imgur.com/0uEOfSA.jpg")
+    global bg
+    bg = Background(bgImage, Vector((0, bgImage.get_height()/2)), DISPLAYW)
+    trees = True
+    interaction.passBack(bg)
     frame.set_draw_handler(drawGame)
 
 def enter_level2():
-    # levelImage = ""
+    bgImage = simplegui.load_image("https://i.imgur.com/1uBtqqe.jpg")
+    global bg
+    bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
+    trees = True
+    interaction.passBack(bg)
     frame.set_draw_handler(drawGame)
 
 def enter_level3():
-    # levelImage = ""
+    bgImage = simplegui.load_image("https://i.imgur.com/KzqV3D9.jpg")
+    global bg
+    bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
+    trees = True
+    interaction.passBack(bg)
     frame.set_draw_handler(drawGame)
 
 
@@ -160,7 +177,7 @@ quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
 frame = simplegui.create_frame("Papaya Racers", DISPLAYW, DISPLAYH)
 frame.set_mouseclick_handler(clickMainMenu)
-frame.set_canvas_background('white')
+
 frame.set_draw_handler(draw)#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
