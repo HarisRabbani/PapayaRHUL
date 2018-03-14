@@ -10,6 +10,7 @@ from Sprite import Sprite
 from Interaction import Interaction
 from Interaction import Interaction
 from Background import Background
+from Obstacle import Obstacle
 import random
 
 try:
@@ -30,6 +31,8 @@ explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/s
 # x values should be updated and not y values by any +ve values
 treeImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
+obstacle1img = simplegui.load_image("https://i.imgur.com/iHozk2k.png")
+
 
 
 
@@ -42,6 +45,8 @@ w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 bg = None
 levelImage = ""
+obstacle1 = Obstacle(Vector((240, DISPLAYH/2)), Vector((1, 0)), obstacle1img)
+obstacle1.animate = True
 
 kbd = Keyboard()
 
@@ -80,6 +85,7 @@ def drawGame(canvas):
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
     bg.update()
+    obstacle1.update()
     bg.draw(canvas)
     interaction.update()
     tree1.update()
@@ -88,6 +94,7 @@ def drawGame(canvas):
     tree1.draw(canvas)
     tree2.draw(canvas)
     userCar.draw(canvas)
+    obstacle1.draw(canvas)
     w1.draw(canvas)
     w2.draw(canvas)
     interaction.weapColl.update()
