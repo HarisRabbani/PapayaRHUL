@@ -4,11 +4,12 @@ except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import math
 from Vector import Vector
+from Offset import Offset
 
-class Sprite:
+class Sprite(Offset):
     #Parent class for anything that has a spritesheet
 
-    def __init__(self, image, row, column):
+    def __init__(self, image, row, column, pos):
         self.img = image
         self.row = row
         self.column = column
@@ -22,23 +23,26 @@ class Sprite:
         self.x = None
         self.y = None
         self.hitCount = 0
+        self.frameElapsed = 0
         self.frameIndex = [0, 0]
         self.set_frame()
         self.animate = False
         self.corners = [None, None, None, None]  # This will hold all the corner posistions of any sprite
         self.offsets = [None, None, None, None]  # This will hold all of the offsets UP, DOWN, LEFT, RIGHT
+        self.defineOffsets(pos)
+        super().__init__(self.offsets[0], self.offsets[1], self.offsets[2], self.offsets[3])
 
 
     def defineOffsets(self, pos):
-        top = Vector((pos.x, pos.y - self.frameHeight/2))
-        bottom = Vector((pos.x, pos.y + self.frameHeight/2))
-        right = Vector((pos.x + self.frameWidth/2, pos.y))
-        left = Vector((pos.x - self.frameWidth/2, pos.y))
+        self.offT = Vector((pos.x, pos.y - self.frameHeight/2))
+        self.offB = Vector((pos.x, pos.y + self.frameHeight/2))
+        self.offR = Vector((pos.x + self.frameWidth/2, pos.y))
+        self.offL = Vector((pos.x - self.frameWidth/2, pos.y))
 
-        self.offsets[0] = top
-        self.offsets[1] = bottom
-        self.offsets[2] = right
-        self.offsets[3] = left
+        self.offsets[0] = self.offT
+        self.offsets[1] = self.offB
+        self.offsets[2] = self.offR
+        self.offsets[3] = self.offL
 
     def defineCorners(self, pos):
         tL = Vector((pos.x - self.frameWidth/2, pos.y - self.frameHeight/2))
@@ -60,6 +64,7 @@ class Sprite:
 
 
         else:
+            self.frameElapsed += 1
             self.frameIndex[0] = (self.frameIndex[0] + 1) % self.column
             self.update_x()
             if self.frameIndex[0] == 0:

@@ -17,7 +17,8 @@ try:
     import simplegui
 except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-
+import math
+import random
 
 DISPLAYW = 1000
 DISPLAYH = 675
@@ -31,12 +32,12 @@ explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/s
 # x values should be updated and not y values by any +ve values
 treeImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
-obstacle1img = simplegui.load_image("https://i.imgur.com/iHozk2k.png")
+obstacle1img = simplegui.load_image("https://i.imgur.com/waPEQMH.png")
 
 
 
 
-explosionSprite = Sprite(explosionSheet, 9, 9)
+
 
 userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5)
 tree1 = Tree(treeImg, 0+treeImg.get_height()/2, DISPLAYW)
@@ -45,8 +46,8 @@ w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 bg = None
 levelImage = ""
-obstacle1 = Obstacle(Vector((240, DISPLAYH/2)), Vector((1, 0)), obstacle1img)
-obstacle1.animate = True
+obstacles = []
+
 
 kbd = Keyboard()
 
@@ -71,7 +72,7 @@ def enter_game():
     frame.set_draw_handler(drawGame)
 
 
-interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2)
+interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
 
 #parameter passed in as canvas
 def drawGame(canvas):
@@ -85,7 +86,6 @@ def drawGame(canvas):
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
     bg.update()
-    obstacle1.update()
     bg.draw(canvas)
     interaction.update()
     tree1.update()
@@ -94,11 +94,17 @@ def drawGame(canvas):
     tree1.draw(canvas)
     tree2.draw(canvas)
     userCar.draw(canvas)
-    obstacle1.draw(canvas)
     w1.draw(canvas)
     w2.draw(canvas)
-    interaction.weapColl.update()
-    interaction.weapColl.draw(canvas)
+    interaction.update()
+    interaction.draw(canvas)
+    for i in obstacles:
+        i.vel = tree1.vel
+        i.update()
+        i.draw(canvas)
+
+
+
 
 
 
@@ -115,6 +121,10 @@ def drawGame(canvas):
 
 def timer_handler():
    print("Papaya Spawn Stuff")
+
+def spawnObstacle():
+    obs = Obstacle(Vector((DISPLAYW, random.randint(100, 550))), Vector((1, 0)), obstacle1img, 3, 3)
+    obstacles.append(obs)
 
 
 def draw_Papaya(canvas):
@@ -189,5 +199,7 @@ frame.set_draw_handler(draw)#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
 timer = simplegui.create_timer(5000, timer_handler)
+obstacleSpawn = simplegui.create_timer(10000, spawnObstacle)
 timer.start()
+obstacleSpawn.start()
 frame.start()

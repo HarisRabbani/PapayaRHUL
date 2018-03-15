@@ -4,7 +4,7 @@ from Sprite import Sprite
 class UserCar(Sprite):
 
     def __init__(self, image, pos, row, column):
-        super().__init__(image, row, column)
+        super().__init__(image, row, column, pos)
         self.pos = pos
         self.pos.x = self.pos.x + self.frameWidth/2
         super().defineOffsets(pos)
@@ -27,6 +27,8 @@ class UserCar(Sprite):
         canvas.draw_text('Dodged: ' + str(self.dodged), [20, 30], 15, 'Black')
         canvas.draw_text('Papayas: ' + str(self.papayaCollected), (20, 45), 15, 'Black')
         canvas.draw_text('Final Score: ' + str(self.score), (20, 62), 18, 'Black')
+        canvas.draw_text('Lives: ' + str(self.lives), (300, 62), 18, 'Black')
+
 
 
 
