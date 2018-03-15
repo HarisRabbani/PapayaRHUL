@@ -21,6 +21,6 @@ class Wall:
         canvas.draw_line(self.arg1, self.arg2, self.border*2+1,  self.color)
 
     def hit(self, ball):
-        hR = (ball.offsetL() <= self.edgeR)
-        hL = (ball.offsetR() >= self.edgeL)
+        hR = (ball.offsetL <= self.edgeR)
+        hL = (ball.offsetR >= self.edgeL)
         return hR and hL

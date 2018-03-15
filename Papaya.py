@@ -8,7 +8,9 @@ from UserCar import UserCar
 from Tree import Tree
 from Sprite import Sprite
 from Interaction import Interaction
+from Interaction import Interaction
 from Background import Background
+from Obstacle import Obstacle
 import random
 
 try:
@@ -29,82 +31,37 @@ explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/s
 # x values should be updated and not y values by any +ve values
 treeImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
-levelImage = ""
+obstacle1img = simplegui.load_image("https://i.imgur.com/iHozk2k.png")
+welcomeScreenButtonImg = simplegui.load_image("https://i.imgur.com/EuhSFX1.jpg")
+welcomeScreenBG = simplegui.load_image("https://i.imgur.com/HEsDK8S.jpg")
+
+
+
 
 
 explosionSprite = Sprite(explosionSheet, 9, 9)
 
 userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5)
-tree1 = Tree(treeImg, 50, DISPLAYW)
-tree2 = Tree(treeImg, 600, DISPLAYW)
+tree1 = Tree(treeImg, 0+treeImg.get_height()/2, DISPLAYW)
+tree2 = Tree(treeImg, DISPLAYH-treeImg.get_height()/2, DISPLAYW)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
-trees = False
+bg = None
+levelImage = ""
+obstacle1 = Obstacle(Vector((240, DISPLAYH/2)), Vector((1, 0)), obstacle1img)
+obstacle1.animate = True
 kbd = Keyboard()
 
 #interaction = Interaction(userCar, kbd)
 
-class Interaction:
+def clickWelcomeScreen(pos):
+    if welcomeScreenGo.contains(pos):
+        welcomeScreenGo.clickBtn()
 
-    def __init__(self, usr_car, kbd, tree):
-        self.user_car = usr_car
-        self.keyboard = kbd
-        self.tree = tree
-        self.carCollision = False
-        self.missileCollide = False
-        self.touchPapaya = False
-
-    def update(self):
-        # Check for wall collision first
-            if self.keyboard.up:
-                # self.user_car.vel.add(Vector((0.05, -0.05)))
-                self.user_car.rotator(False)
-                print("HELLO")
-                # self.user_car.rotating = True
-
-            elif self.keyboard.down:
-                # self.user_car.vel.add(Vector((0.05, 0.05)))
-                self.user_car.rotator(True)
-                # self.user_car.rotating = True
-
-            elif self.keyboard.left:
-                self.user_car.vel.add(Vector((-0.05, 0)))
-                for i in self.tree:
-                    i.vel.add(Vector((0.05, 0)))
-            elif self.keyboard.right:
-
-                # if the right is pressed then add the nitro animation
-                if self.user_car.vel.length() > 10:
-                    pass
-                else:
-                    self.user_car.vel.add(Vector((0.05, 0)))
-                    self.user_car.animate = True
-                    for i in self.tree:
-                        i.vel.sub(Vector((0.05, 0)))
-
-            elif self.keyboard.space:
-
-                url = 'https://i.imgur.com/RVi7F76.png'
-                #missile = Weapon(Vector((self.user_car.pos.x + self.user_car., self.user_car.pos.y)),
-                 #                Vector(((random.randrange(2, 5)), 0)), url, 4, 4)
-
-
-                # obj_missile = Weapon(Vector((self.user_car.pos.x + IMG_usr_DIMS[0], self.user_car.pos.y)),Vector((random.randrange(1, 5), 0)), missile_url, 4, 4)
-                # weapCollision.addWeapon(obj_missile)
-            else:
-                # self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
-                self.user_car.animate = False
-                pass
-
-        # else:
-        # call game crash
-        # then game over interface
-        # obj_explosion_spriteS=True
-
-
-
-
-
+def drawWelcomeScreen(canvas):
+    userCar.resetScore()
+    canvas.draw_image(welcomeScreenBG, (welcomeScreenBG.get_width()/2, welcomeScreenBG.get_height()/2), (welcomeScreenBG.get_width(), welcomeScreenBG.get_height()), (DISPLAYW/2, DISPLAYH/2),(DISPLAYW, DISPLAYH))
+    welcomeScreenGo.draw(canvas)
 
 def click(pos):
     for x in range(0, len(arrayButton)):
@@ -122,8 +79,8 @@ def draw(canvas):
 def enter_game():
     frame.set_draw_handler(drawGame)
 
-
-interaction = Interaction(userCar, kbd, [tree1, tree2])
+welcomeScreenGo = Button("https://i.imgur.com/EuhSFX1.jpg", (500, 500), enter_game)
+interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2)
 
 #parameter passed in as canvas
 def drawGame(canvas):
@@ -137,16 +94,20 @@ def drawGame(canvas):
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
     bg.update()
+    obstacle1.update()
+    bg.draw(canvas)
     interaction.update()
     tree1.update()
     tree2.update()
+    userCar.update()
     tree1.draw(canvas)
     tree2.draw(canvas)
-    userCar.update()
-    bg.draw(canvas)
     userCar.draw(canvas)
+    obstacle1.draw(canvas)
     w1.draw(canvas)
     w2.draw(canvas)
+    interaction.weapColl.update()
+    interaction.weapColl.draw(canvas)
 
 
 
@@ -204,23 +165,29 @@ def quit():
 def enter_level1():
     bgImage = simplegui.load_image("https://i.imgur.com/0uEOfSA.jpg")
     global bg
-    bg = Background(bgImage, 675 / 2, DISPLAYW)
+    bg = Background(bgImage, Vector((0, bgImage.get_height()/2)), DISPLAYW)
     trees = True
-    frame.set_draw_handler(drawGame)
+    interaction.passBack(bg)
+    frame.set_mouseclick_handler(clickWelcomeScreen)
+    frame.set_draw_handler(drawWelcomeScreen)
 
 def enter_level2():
     bgImage = simplegui.load_image("https://i.imgur.com/1uBtqqe.jpg")
     global bg
-    bg = Background(bgImage, 675 / 2, DISPLAYW)
+    bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     trees = True
-    frame.set_draw_handler(drawGame)
+    interaction.passBack(bg)
+    frame.set_mouseclick_handler(clickWelcomeScreen)
+    frame.set_draw_handler(drawWelcomeScreen)
 
 def enter_level3():
     bgImage = simplegui.load_image("https://i.imgur.com/KzqV3D9.jpg")
     global bg
-    bg = Background(bgImage, (Vector((0,675 / 2))), DISPLAYW)
+    bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     trees = True
-    frame.set_draw_handler(drawGame)
+    interaction.passBack(bg)
+    frame.set_mouseclick_handler(clickWelcomeScreen)
+    frame.set_draw_handler(drawWelcomeScreen)
 
 
 start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enter_level_select)
@@ -229,7 +196,7 @@ quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
 frame = simplegui.create_frame("Papaya Racers", DISPLAYW, DISPLAYH)
 frame.set_mouseclick_handler(clickMainMenu)
-frame.set_canvas_background('white')
+
 frame.set_draw_handler(draw)#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)

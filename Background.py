@@ -16,10 +16,15 @@ class Background:
         self.canvasW = canvasW
         self.x = canvasW
         self.pos = pos
+        self.pos.x = 0
+
 
     def update(self):
-        if self.pos.x + self.width < self.width/2:
-            self.pos.x = 0
+       # if self.pos.x < -self.width + self.canvasW:
+        #    self.pos.x = self.width-self.canvasW
+        self.pos.x %= -self.width
+        self.pos.add(self.vel)
+        print(self.pos.x)
 
     def draw(self, canvas):
         canvas.draw_image(self.img, (self.width / 2, self.height / 2), (self.width, self.height),(self.pos.getP()), (self.width, self.height))

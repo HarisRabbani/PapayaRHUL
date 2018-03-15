@@ -2,48 +2,80 @@
 from Vector import Vector
 from UserCar import UserCar
 from Weapon import Weapon
+from WeaponCollision import WeaponCollision
+
+try:
+    import simplegui
+except ImportError:
+    import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 import random
 
 class Interaction:
 
-    def __init__(self, usr_car, kbd):
-        self.user_car = usr_car
-        self.keyboard = kbd
+    def __init__(self, usr_car, kbd, trees, w1, w2):
+        self.uCar = usr_car
+        self.w1 = w1
+        self.bg = None
+        self.w2 = w2
+        self.trees = trees
+        self.kbd = kbd
         self.carCollision = False
         self.missileCollide = False
         self.touchPapaya = False
+        self.offScreen = False  # WHEN TRUE - GAME SHOULD END
+        self.weapColl = WeaponCollision()
+        self.weapColl.addWall(w1)
+        self.weapColl.addWall(w2)
+
+    def passBack(self, bg):
+        self.bg = bg
+
 
     def update(self):
         # Check for wall collision first
-            if self.keyboard.up:
-                # self.user_car.vel.add(Vector((0.05, -0.05)))
-                self.user_car.rotator(False)
-                # self.user_car.rotating = True
+            if self.kbd.up:
+                self.uCar.rotator(False)
+            if self.kbd.down:
+                self.uCar.rotator(True)
 
-            elif self.keyboard.down:
-                # self.user_car.vel.add(Vector((0.05, 0.05)))
-                self.user_car.rotator(True)
-                # self.user_car.rotating = True
-
-            elif self.keyboard.left:
-                self.user_car.vel.add(Vector((-0.05, 0)))
-            elif self.keyboard.right:  # if the right is pressed then add the nitro animation
-                if self.user_car.vel.length() > 10:
+            if self.kbd.right:
+                if self.uCar.vel.length() > 10:
                     pass
                 else:
-                    self.user_car.vel.add(Vector((0.05, 0)))
-            elif self.keyboard.space:
-
-                url = 'https://i.imgur.com/RVi7F76.png'
-                #missile = Weapon(Vector((self.user_car.pos.x + self.user_car., self.user_car.pos.y)),
-                 #                Vector(((random.randrange(2, 5)), 0)), url, 4, 4)
-
-
-                # obj_missile = Weapon(Vector((self.user_car.pos.x + IMG_usr_DIMS[0], self.user_car.pos.y)),Vector((random.randrange(1, 5), 0)), missile_url, 4, 4)
-                # weapCollision.addWeapon(obj_missile)
+                   # self.uCar.vel.add(Vector((0.05, 0)))
+                    self.uCar.animate = True
+                    self.bg.vel.sub(Vector((0.05, 0)))
+                    for i in self.trees:
+                        i.vel.sub(Vector((0.05, 0)))
             else:
-                # self.user_car.vel=Vector((1,0))#if nothing is done then keep moving forward
-                pass
+                self.uCar.animate = False
+
+            if self.kbd.left:
+              #  self.uCar.vel.add(Vector((-0.05, 0)))
+                self.bg.vel.add(Vector((0.05, 0)))
+                for i in self.trees:
+                    i.vel.add(Vector((0.05, 0)))
+            if self.kbd.space:
+                image = simplegui.load_image('https://i.imgur.com/RVi7F76.png')
+                missile = Weapon(Vector((self.uCar.pos.x + self.uCar.frameWidth/2, self.uCar.pos.y)), Vector((5, self.uCar.vel.y)), image, 4, 4)
+                self.weapColl.addWeapon(missile)
+
+
+            # For all userCar corners and offsets. Check with all other ones.
+            for i in self.uCar.corners:
+                for j in self.uCar.offsets:
+                    if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
+                        self.offScreen = True
+                    if i.y > 600 - self.w1.border or j.y > 600 - self.w1.border:
+                        self.offScreen = True
+
+
+
+
+
+
+            
+           
 
         # else:
         # call game crash
