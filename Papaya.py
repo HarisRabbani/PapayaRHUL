@@ -33,6 +33,9 @@ explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/s
 treeImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
 obstacle1img = simplegui.load_image("https://i.imgur.com/waPEQMH.png")
+obstacle2img = simplegui.load_image("https://i.imgur.com/CKFF111.png")
+obstacle3img = simplegui.load_image("https://i.imgur.com/xzom4vi.png")
+OBS = [obstacle1img, obstacle2img, obstacle3img]
 
 
 
@@ -123,7 +126,8 @@ def timer_handler():
    print("Papaya Spawn Stuff")
 
 def spawnObstacle():
-    obs = Obstacle(Vector((DISPLAYW, random.randint(100, 550))), Vector((1, 0)), obstacle1img, 3, 3)
+    obsImage = OBS[random.randint(0,2)]
+    obs = Obstacle(Vector((DISPLAYW, random.randint(100, 550))), Vector((1, 0)), obsImage, 3, 3)
     obstacles.append(obs)
 
 
@@ -199,7 +203,7 @@ frame.set_draw_handler(draw)#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
 timer = simplegui.create_timer(5000, timer_handler)
-obstacleSpawn = simplegui.create_timer(10000, spawnObstacle)
+obstacleSpawn = simplegui.create_timer(2000, spawnObstacle)
 timer.start()
 obstacleSpawn.start()
 frame.start()

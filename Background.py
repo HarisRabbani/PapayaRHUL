@@ -22,7 +22,7 @@ class Background:
     def update(self):
        # if self.pos.x < -self.width + self.canvasW:
         #    self.pos.x = self.width-self.canvasW
-        self.pos.x %= -self.width
+        self.pos.x %= -self.canvasW
         self.pos.add(self.vel)
 
 
