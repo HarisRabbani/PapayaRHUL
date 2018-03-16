@@ -32,6 +32,8 @@ explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/s
 # x values should be updated and not y values by any +ve values
 treeImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
+welcomeScreenButtonImg = simplegui.load_image("https://i.imgur.com/EuhSFX1.jpg")
+welcomeScreenBG = simplegui.load_image("https://i.imgur.com/HEsDK8S.jpg")
 obstacle1img = simplegui.load_image("https://i.imgur.com/waPEQMH.png")
 obstacle2img = simplegui.load_image("https://i.imgur.com/CKFF111.png")
 obstacle3img = simplegui.load_image("https://i.imgur.com/xzom4vi.png")
@@ -71,11 +73,21 @@ def draw(canvas):
         arrayButton[x].draw(canvas)
 
 
+def clickWelcomeScreen(pos):
+    if welcomeScreenGo.contains(pos):
+        welcomeScreenGo.clickBtn()
+
+def drawWelcomeScreen(canvas):
+    canvas.draw_image(welcomeScreenBG, (welcomeScreenBG.get_width()/2, welcomeScreenBG.get_height()/2), (welcomeScreenBG.get_width(), welcomeScreenBG.get_height()), (DISPLAYW/2, DISPLAYH/2),(DISPLAYW, DISPLAYH))
+    welcomeScreenGo.draw(canvas)
+
 def enter_game():
+    interaction.passBack(bg)
     frame.set_draw_handler(drawGame)
 
 
 interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
+welcomeScreenGo = Button("https://i.imgur.com/EuhSFX1.jpg", (500, 500), enter_game)
 
 #parameter passed in as canvas
 def drawGame(canvas):
@@ -167,13 +179,15 @@ def enter_level_select():
 def quit():
     exit(0)
 
+
 def enter_level1():
     bgImage = simplegui.load_image("https://i.imgur.com/0uEOfSA.jpg")
     global bg
     bg = Background(bgImage, Vector((0, bgImage.get_height()/2)), DISPLAYW)
     trees = True
     interaction.passBack(bg)
-    frame.set_draw_handler(drawGame)
+    frame.set_mouseclick_handler(clickWelcomeScreen)
+    frame.set_draw_handler(drawWelcomeScreen)
 
 def enter_level2():
     bgImage = simplegui.load_image("https://i.imgur.com/1uBtqqe.jpg")
@@ -181,7 +195,8 @@ def enter_level2():
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     trees = True
     interaction.passBack(bg)
-    frame.set_draw_handler(drawGame)
+    frame.set_mouseclick_handler(clickWelcomeScreen)
+    frame.set_draw_handler(drawWelcomeScreen)
 
 def enter_level3():
     bgImage = simplegui.load_image("https://i.imgur.com/KzqV3D9.jpg")
@@ -189,7 +204,8 @@ def enter_level3():
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     trees = True
     interaction.passBack(bg)
-    frame.set_draw_handler(drawGame)
+    frame.set_mouseclick_handler(clickWelcomeScreen)
+    frame.set_draw_handler(drawWelcomeScreen)
 
 
 start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enter_level_select)
