@@ -100,6 +100,8 @@ def drawGame(canvas):
    #obj_Int.CarsCollison()
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
+    timer = simplegui.create_timer(5000, timer_handler)
+    timer.start()
     bg.update()
     bg.draw(canvas)
     interaction.update()
@@ -214,12 +216,9 @@ quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
 frame = simplegui.create_frame("Papaya Racers", DISPLAYW, DISPLAYH)
 frame.set_mouseclick_handler(clickMainMenu)
-
 frame.set_draw_handler(draw)#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
-timer = simplegui.create_timer(5000, timer_handler)
 obstacleSpawn = simplegui.create_timer(2000, spawnObstacle)
-timer.start()
 obstacleSpawn.start()
 frame.start()
