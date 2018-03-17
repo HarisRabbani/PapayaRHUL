@@ -168,7 +168,7 @@ def clickLevelSelect(pos):
             levelButton[x].clickBtn()
 
 def drawHelp(canvas):
-    helpImage = simplegui.load_image("https://i.imgur.com/w7X9JYM.png")
+    helpImage = simplegui.load_image("https://i.imgur.com/AX0ZNyM.png")
     canvas.draw_image(helpImage, (helpImage.get_width()/2, helpImage.get_height()/2), (helpImage.get_width(),helpImage.get_height()), (DISPLAYW/2, DISPLAYH/2), (helpImage.get_width(), helpImage.get_height()))
     helpButtonBack.draw(canvas)
 
@@ -203,7 +203,7 @@ def quit():
 
 
 def enter_level1():
-    bgImage = simplegui.load_image("https://i.imgur.com/0uEOfSA.jpg")
+    bgImage = simplegui.load_image("https://i.imgur.com/erXGov3.png")
     global bg
     bg = Background(bgImage, Vector((0, bgImage.get_height()/2)), DISPLAYW)
     trees = True
@@ -212,7 +212,7 @@ def enter_level1():
     frame.set_draw_handler(drawWelcomeScreen)
 
 def enter_level2():
-    bgImage = simplegui.load_image("https://i.imgur.com/1uBtqqe.jpg")
+    bgImage = simplegui.load_image("https://i.imgur.com/9TUjah2.png")
     global bg
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     trees = True
@@ -221,7 +221,7 @@ def enter_level2():
     frame.set_draw_handler(drawWelcomeScreen)
 
 def enter_level3():
-    bgImage = simplegui.load_image("https://i.imgur.com/KzqV3D9.jpg")
+    bgImage = simplegui.load_image("https://i.imgur.com/AljXcD9.png")
     global bg
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     trees = True
