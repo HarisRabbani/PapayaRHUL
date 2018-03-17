@@ -51,9 +51,15 @@ class UserCar(Sprite):
 
     def rotator(self, direction):  # Direction is a boolean which represents which way should be turned
         if not direction:
-            self.rotation -= 1 / 180 * 5
-            self.vel.rotateRad(-1 / 180 * 5)
+            if self.rotation < -0.45:
+                pass
+            else:
+                self.rotation -= 1 / 180 * 5
+                self.vel.rotateRad(-1 / 180 * 5)
 
         if direction:
-            self.rotation += 1 / 180 * 5
-            self.vel.rotateRad(1 / 180 * 5)
+            if self.rotation > 0.45:
+                pass
+            else:
+                self.rotation += 1 / 180 * 5
+                self.vel.rotateRad(1 / 180 * 5)

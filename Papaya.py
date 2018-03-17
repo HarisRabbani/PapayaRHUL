@@ -23,21 +23,21 @@ import random
 DISPLAYW = 1000
 DISPLAYH = 675
 
-userCarImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/User_car_nitro.jpg')
+userCarImg = simplegui.load_image('https://i.imgur.com/uB67l2f.png')
 #image enemy cars
 
 papayaImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Papaya_image.jpg')
 explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/sprites/explosion-spritesheet.png')
 
 # x values should be updated and not y values by any +ve values
-treeImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Test_image.jpg')
+treeImg = simplegui.load_image('https://i.imgur.com/PxerxUP.png')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
 welcomeScreenButtonImg = simplegui.load_image("https://i.imgur.com/EuhSFX1.jpg")
 welcomeScreenBG = simplegui.load_image("https://i.imgur.com/HEsDK8S.jpg")
 obstacle1img = simplegui.load_image("https://i.imgur.com/waPEQMH.png")
-obstacle2img = simplegui.load_image("https://i.imgur.com/CKFF111.png")
-obstacle3img = simplegui.load_image("https://i.imgur.com/xzom4vi.png")
-OBS = [obstacle1img, obstacle2img, obstacle3img]
+obstacle2img = simplegui.load_image("https://i.imgur.com/8HA81OA.png")
+OBS = [obstacle1img, obstacle2img]
+rowCols = [(3, 3), (2, 4)]
 
 
 
@@ -100,8 +100,7 @@ def drawGame(canvas):
    #obj_Int.CarsCollison()
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
-    timer = simplegui.create_timer(5000, timer_handler)
-    timer.start()
+
     bg.update()
     bg.draw(canvas)
     interaction.update()
@@ -116,9 +115,12 @@ def drawGame(canvas):
     interaction.update()
     interaction.draw(canvas)
     for i in obstacles:
+        if i.pos.x < 0 - i.width/2:
+            obstacles.remove(i)
         i.vel = tree1.vel
         i.update()
         i.draw(canvas)
+
 
 
 
@@ -140,9 +142,14 @@ def timer_handler():
    print("Papaya Spawn Stuff")
 
 def spawnObstacle():
-    obsImage = OBS[random.randint(0,2)]
-    obs = Obstacle(Vector((DISPLAYW, random.randint(100, 550))), Vector((1, 0)), obsImage, 3, 3)
+    num = random.randint(0, len(OBS)-1)
+    obsImg = OBS[num]
+    obsRowCol = rowCols[num]
+    obs = Obstacle(Vector((DISPLAYW, random.randint(100, 550))), Vector((1, 0)), obsImg, obsRowCol[0], obsRowCol[1])
+
     obstacles.append(obs)
+
+
 
 
 def draw_Papaya(canvas):
@@ -235,6 +242,8 @@ frame.set_mouseclick_handler(clickMainMenu)
 enterMainMenu()#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
-obstacleSpawn = simplegui.create_timer(2000, spawnObstacle)
+timer = simplegui.create_timer(5000, timer_handler)
+timer.start()
+obstacleSpawn = simplegui.create_timer(4500, spawnObstacle)
 obstacleSpawn.start()
 frame.start()
