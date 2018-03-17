@@ -2,6 +2,7 @@ try:
     import simplegui
 except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+
 import math
 from Vector import Vector
 from Offset import Offset

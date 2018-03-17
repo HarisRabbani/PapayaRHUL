@@ -29,6 +29,7 @@ class Interaction:
         self.weapons = []
         self.walls = [w1, w2]
         self.inCollision = False
+        self.firingCount = 0
 
     def passBack(self, bg):
         self.bg = bg
@@ -62,21 +63,53 @@ class Interaction:
             self.bg.vel.add(Vector((0.05, 0)))
             for i in self.trees:
                 i.vel.add(Vector((0.05, 0)))
+
         if self.kbd.space:
-            image = simplegui.load_image('https://i.imgur.com/RVi7F76.png')
-            missile = Weapon(Vector((self.uCar.pos.x + self.uCar.frameWidth / 2, self.uCar.pos.y)),
-                             Vector((5, self.uCar.vel.y)), image, 4, 4)
-            self.weapons.append(missile)
+            if self.firingCount >= 1:
+                pass
+            else:
+                image = simplegui.load_image('https://i.imgur.com/RVi7F76.png')
+                missile = Weapon(Vector((self.uCar.pos.x + self.uCar.frameWidth / 2, self.uCar.pos.y)),
+                                 Vector((5, self.uCar.vel.y)), image, 4, 4)
+                self.weapons.append(missile)
+                self.firingCount += 1
+        else:
+            self.firingCount = 0
 
         # For all userCar corners and offsets. Check with all other ones.
         for i in self.uCar.corners:
             for j in self.uCar.offsets:
                 if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
-                    self.uCar.lives = 0
-                    print("Car hitting top wall")
-                if i.y > 600 - self.w2.border or j.y > 600 - self.w2.border:
-                    self.uCar.lives = 0
-                    print("Car hitting bottom wall")
+                    #self.uCar.lives = 0
+
+                    if (self.uCar.c_health_status==3):
+                        self.uCar.c_health_status = 2
+                    elif(self.uCar.c_health_status==2):
+                        self.uCar.c_health_status = 1
+                    elif(self.uCar.c_health_status==1):
+                        self.uCar.c_health_status = 0
+
+                    self.uCar.pos=Vector((50,675/2))
+                    print(self.uCar.c_health_status)
+                    break
+                    #print("Car hitting top wall")
+
+                if i.y > 600 - self.w2.border and j.y > 600 - self.w2.border:
+                    #self.uCar.lives = 0
+
+                    self.uCar.pos = Vector((50, 675/2))
+                    #break
+
+                    if (self.uCar.c_health_status==3):
+                        self.uCar.c_health_status = 2
+                    elif(self.uCar.c_health_status==2):
+                        self.uCar.c_health_status = 1
+                    elif(self.uCar.c_health_status==1):
+                        self.uCar.c_health_status = 0
+
+
+                    #print("Car hitting bottom wall")
+
                 # For every obstacle
 
                 for v in self.obstacles:

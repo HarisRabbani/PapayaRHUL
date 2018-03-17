@@ -11,6 +11,8 @@ class Keyboard:
         self.space = False
         self.up = False
         self.down = False
+        self.activeMissile = False
+        self.count=2
 
     def keyDown(self, key):
         if key == simplegui.KEY_MAP['right']:

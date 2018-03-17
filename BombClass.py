@@ -1,4 +1,5 @@
-from user301_kOICjXGLxt_0 import Vector
+#from user301_kOICjXGLxt_0 import Vector
+from Vector import Vector
 import random
 try:
     import simplegui

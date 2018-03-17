@@ -11,6 +11,7 @@ from Interaction import Interaction
 from Interaction import Interaction
 from Background import Background
 from Obstacle import Obstacle
+from PapayaPick import PapayaPick
 import random
 
 try:
@@ -39,12 +40,15 @@ obstacle2img = simplegui.load_image("https://i.imgur.com/8HA81OA.png")
 OBS = [obstacle1img, obstacle2img]
 rowCols = [(3, 3), (2, 4)]
 
+#health images
+health_0= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_0.png')
+health_1= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_1.png')
+health_2= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_2.png')
+health_3= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_3.png')
 
 
 
-
-
-userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5)
+userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5,health_0,health_1,health_2,health_3)
 tree1 = Tree(treeImg, 0+treeImg.get_height()/2, DISPLAYW)
 tree2 = Tree(treeImg, DISPLAYH-treeImg.get_height()/2, DISPLAYW)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
@@ -88,6 +92,7 @@ def enter_game():
 
 interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
 welcomeScreenGo = Button("https://i.imgur.com/EuhSFX1.jpg", (500, 500), enter_game)
+Papaya=PapayaPick(papayaImg,Vector((random.randrange(300,950),random.randrange(150,525))),(papayaImg.get_width()),papayaImg.get_height())
 
 #parameter passed in as canvas
 def drawGame(canvas):
@@ -110,10 +115,13 @@ def drawGame(canvas):
     tree1.draw(canvas)
     tree2.draw(canvas)
     userCar.draw(canvas)
+    userCar.update()
     w1.draw(canvas)
     w2.draw(canvas)
     interaction.update()
     interaction.draw(canvas)
+    Papaya.draw(canvas)
+    Papaya.update()
     for i in obstacles:
         if i.pos.x < 0 - i.width/2:
             obstacles.remove(i)
@@ -139,7 +147,8 @@ def drawGame(canvas):
 
 
 def timer_handler():
-   print("Papaya Spawn Stuff")
+   #print("Papaya Spawn Stuff")
+    pass
 
 def spawnObstacle():
     num = random.randint(0, len(OBS)-1)

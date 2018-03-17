@@ -3,7 +3,10 @@ from Sprite import Sprite
 
 class UserCar(Sprite):
 
-    def __init__(self, image, pos, row, column):
+#user's health will be updated below
+#we will need to have a current variable which keeps track of user's health
+
+    def __init__(self, image, pos, row, column,health0,health1,health2,health3):
         super().__init__(image, row, column, pos)
         self.pos = pos
         self.pos.x = self.pos.x + self.frameWidth/2
@@ -18,7 +21,12 @@ class UserCar(Sprite):
         self.papayaCollected = 0
         self.imgDim = [self.img.get_width(), self.img.get_height()]
         self.lives = 3
-
+        self.img_health_0=health0
+        self.img_health_1=health1
+        self.img_health_2=health2
+        self.img_health_3=health3
+        self.c_health_status=3
+        self.health_img=self.img_health_3
         # Car physics code
 
     def draw(self, canvas):
@@ -27,7 +35,8 @@ class UserCar(Sprite):
         canvas.draw_text('Dodged: ' + str(self.dodged), [20, 30], 15, 'Black')
         canvas.draw_text('Papayas: ' + str(self.papayaCollected), (20, 45), 15, 'Black')
         canvas.draw_text('Final Score: ' + str(self.score), (20, 62), 18, 'Black')
-        canvas.draw_text('Lives: ' + str(self.lives), (300, 62), 18, 'Black')
+        canvas.draw_image(self.health_img, (75 / 2, 30 / 2), (75, 30), (200, 50), (75, 30))  # hard coded values
+
 
 
 
@@ -41,6 +50,15 @@ class UserCar(Sprite):
         super().defineCorners(self.pos)
 
         #Score is increased by other factors too.
+
+        print(self.c_health_status)
+
+        if (self.c_health_status == 2):#hard coded values
+            self.health_img=self.img_health_2
+        elif (self.c_health_status == 1):
+            self.health_img = self.img_health_1
+        elif (self.c_health_status == 0):
+            self.health_img = self.img_health_0
 
     def Collisonwall(self):
         #REDO THIS CODE, CAR SHOULD BE ADDED TO INTERACTION

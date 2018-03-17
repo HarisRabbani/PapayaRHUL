@@ -7,10 +7,10 @@ from Vector import Vector
 class PapayaPick:
 
 
-    def __init__(self,img,pos,vel,width,height):
+    def __init__(self,img,pos,width,height):
         self.img = img
         self.pos=pos
-        self.vel=vel
+        self.vel=Vector((-2,0))
         self.width=width
         self.height=height
 
@@ -22,7 +22,8 @@ class PapayaPick:
 
 
     def update(self):
-        self.pos.x-=self.vel
+        self.pos.add(self.vel)
+        #possible code used for the collision detection with the car
 """
         if (self.touchPapaya) == False:
             if ((obj_user_car.pos.x + car_width > papaya_x) and obj_user_car.pos.x < papaya_x + papaya_size):
