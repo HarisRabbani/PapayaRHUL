@@ -83,8 +83,28 @@ def clickWelcomeScreen(pos):
     if welcomeScreenGo.contains(pos):
         welcomeScreenGo.clickBtn()
 
+def drawAllElements(canvas):
+    bg.draw(canvas)
+    tree1.draw(canvas)
+    tree2.draw(canvas)
+    w1.draw(canvas)
+    w2.draw(canvas)
+    interaction.draw(canvas)
+    Papaya.draw(canvas)
+    userCar.draw(canvas)
+
+def updateAllElements(canvas):
+    bg.update()
+    interaction.update()
+    tree1.update()
+    tree2.update()
+    userCar.update()
+    userCar.update()
+    interaction.update()
+    Papaya.update()
+
 def drawWelcomeScreen(canvas):
-    canvas.draw_image(welcomeScreenBG, (welcomeScreenBG.get_width()/2, welcomeScreenBG.get_height()/2), (welcomeScreenBG.get_width(), welcomeScreenBG.get_height()), (DISPLAYW/2, DISPLAYH/2),(DISPLAYW, DISPLAYH))
+    drawAllElements(canvas)
     welcomeScreenGo.draw(canvas)
 
 def enter_game():
@@ -108,22 +128,9 @@ def drawGame(canvas):
     #obj_Int.TouchPapaya()
     #obj_Int.missileCollision()
 
-    bg.update()
-    bg.draw(canvas)
-    interaction.update()
-    tree1.update()
-    tree2.update()
-    userCar.update()
-    tree1.draw(canvas)
-    tree2.draw(canvas)
-    userCar.draw(canvas)
-    userCar.update()
-    w1.draw(canvas)
-    w2.draw(canvas)
-    interaction.update()
-    interaction.draw(canvas)
-    Papaya.draw(canvas)
-    Papaya.update()
+    drawAllElements(canvas)
+    updateAllElements(canvas)
+
     for i in obstacles:
         if i.pos.x < 0 - i.width/2:
             obstacles.remove(i)
