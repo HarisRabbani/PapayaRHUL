@@ -160,8 +160,20 @@ def clickLevelSelect(pos):
         if(levelButton[x].contains(pos)):
             levelButton[x].clickBtn()
 
+def drawHelp(canvas):
+    helpImage = simplegui.load_image("https://i.imgur.com/w7X9JYM.png")
+    canvas.draw_image(helpImage, (helpImage.get_width()/2, helpImage.get_height()/2), (helpImage.get_width(),helpImage.get_height()), (DISPLAYW/2, DISPLAYH/2), (helpImage.get_width(), helpImage.get_height()))
+    helpButtonBack.draw(canvas)
+
+def clickHelp(pos):
+    if helpButtonBack.contains(pos):
+        helpButtonBack.clickBtn()
+
 def enter_help():
-    pass
+    global helpButtonBack
+    helpButtonBack = Button("https://i.imgur.com/lOd9C7k.png", (650,600), enterMainMenu)
+    frame.set_mouseclick_handler(clickHelp)
+    frame.set_draw_handler(drawHelp)
 
 def level_select(canvas):
     image = simplegui.load_image("https://i.imgur.com/8tYYDrc.png")
@@ -169,8 +181,9 @@ def level_select(canvas):
     level1 = Button("https://i.imgur.com/sZlcBI9.png", (150, 450), enter_level1)
     level2 = Button("https://i.imgur.com/VWL7wfu.png", (500, 450), enter_level2)
     level3 = Button("https://i.imgur.com/wVUdTVL.png", (850, 450), enter_level3)
+    backLS = Button("https://i.imgur.com/lOd9C7k.png", (500, 620), enterMainMenu)
     global levelButton
-    levelButton = [level1, level2, level3]
+    levelButton = [level1, level2, level3, backLS]
     for x in range(0, len(levelButton)):
         levelButton[x].draw(canvas)
 
@@ -209,6 +222,9 @@ def enter_level3():
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
 
+def enterMainMenu():
+    frame.set_mouseclick_handler(clickMainMenu)
+    frame.set_draw_handler(draw)
 
 start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enter_level_select)
 help = Button("https://i.imgur.com/6OfeKop.png", (470, 450), enter_help)
@@ -216,7 +232,7 @@ quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
 frame = simplegui.create_frame("Papaya Racers", DISPLAYW, DISPLAYH)
 frame.set_mouseclick_handler(clickMainMenu)
-frame.set_draw_handler(draw)#automatically passes on the canvas
+enterMainMenu()#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
 obstacleSpawn = simplegui.create_timer(2000, spawnObstacle)
