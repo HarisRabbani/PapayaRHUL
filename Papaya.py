@@ -12,6 +12,7 @@ from Interaction import Interaction
 from Background import Background
 from Obstacle import Obstacle
 from PapayaPick import PapayaPick
+from BombClass import Bomb
 import random
 
 try:
@@ -54,6 +55,7 @@ tree2 = Tree(treeImg, DISPLAYH-treeImg.get_height()/2, DISPLAYW)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 bg = None
+bombs = []
 levelImage = ""
 obstacles = []
 
@@ -128,6 +130,9 @@ def drawGame(canvas):
         i.vel = tree1.vel
         i.update()
         i.draw(canvas)
+    for bom in bombs:
+        bom.update()
+        bom.draw(canvas)
 
 
 
@@ -175,6 +180,9 @@ def clickLevelSelect(pos):
     for x in range(0, len(levelButton)):
         if(levelButton[x].contains(pos)):
             levelButton[x].clickBtn()
+def spawnBomb():
+    bomb = Bomb(tree1.vel.x)
+    bombs.append(bomb)
 
 def drawHelp(canvas):
     helpImage = simplegui.load_image("https://i.imgur.com/AX0ZNyM.png")
@@ -255,4 +263,6 @@ timer = simplegui.create_timer(5000, timer_handler)
 timer.start()
 obstacleSpawn = simplegui.create_timer(4500, spawnObstacle)
 obstacleSpawn.start()
+bombSpawn = simplegui.create_timer(6000, spawnBomb)
+bombSpawn.start()
 frame.start()

@@ -80,8 +80,10 @@ class Interaction:
         for i in self.uCar.corners:
             for j in self.uCar.offsets:
                 if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
-                    #self.uCar.lives = 0
 
+
+                    #self.uCar.lives = 0
+                    self.uCar.pos = Vector((50, 337))
                     if (self.uCar.c_health_status==3):
                         self.uCar.c_health_status = 2
                     elif(self.uCar.c_health_status==2):
@@ -89,9 +91,11 @@ class Interaction:
                     elif(self.uCar.c_health_status==1):
                         self.uCar.c_health_status = 0
 
-                    self.uCar.pos=Vector((50,675/2))
-                    print(self.uCar.c_health_status)
+                    self.uCar.update()
                     break
+
+
+
                     #print("Car hitting top wall")
 
                 if i.y > 600 - self.w2.border and j.y > 600 - self.w2.border:
@@ -107,7 +111,8 @@ class Interaction:
                     elif(self.uCar.c_health_status==1):
                         self.uCar.c_health_status = 0
 
-
+                    self.uCar.update()
+                    break
                     #print("Car hitting bottom wall")
 
                 # For every obstacle

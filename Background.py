@@ -14,15 +14,19 @@ class Background:
         self.height = img.get_height()
         self.vel = Vector((-1, 0))
         self.canvasW = canvasW
-        self.x = canvasW
+        self.x = 0
         self.pos = pos
-        self.pos.x = 0
+        self.pos.x = canvasW + (self.width/2 - canvasW)
 
 
     def update(self):
        # if self.pos.x < -self.width + self.canvasW:
         #    self.pos.x = self.width-self.canvasW
-        self.pos.x %= -self.canvasW
+       # self.pos.x %= -self.width
+
+        self.x = self.pos.x - self.width/2
+        if self.x < -self.width+self.canvasW:
+            self.pos.x = self.canvasW + (self.width/2 - self.canvasW)
         self.pos.add(self.vel)
 
 
