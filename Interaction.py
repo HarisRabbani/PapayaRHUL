@@ -13,9 +13,15 @@ import random
 
 class Interaction:
 
-    def __init__(self, usr_car, kbd, trees, w1, w2, obs):
+    def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs, twoPlayer):
         self.canvW = 1000
         self.uCar = usr_car
+        self.uCar2 = usrCar2
+        self.twoPlayer = twoPlayer
+        if twoPlayer:
+            self.cars = [self.uCar, self.uCar2]
+        else:
+            self.cars = [self.uCar]
         self.w1 = w1
         self.bg = None
         self.obstacles = obs
@@ -30,6 +36,7 @@ class Interaction:
         self.walls = [w1, w2]
         self.inCollision = False
         self.firingCount = 0
+        self.firingCount2 = 0
 
     def passBack(self, bg):
         self.bg = bg
@@ -38,6 +45,18 @@ class Interaction:
         for i in self.weapons:
             i.update()
             i.draw(canvas)
+
+    def removeLife(self, car):
+        self.bg.vel = Vector((-1, 0))
+        for i in self.trees:
+            i.vel = Vector((-1, 0))
+        if car.c_health_status == 3:
+            car.c_health_status = 2
+        elif car.c_health_status == 2:
+            car.c_health_status = 1
+        elif car.c_health_status == 1:
+            car.c_health_status = 0
+
 
     def update(self):
         # Check for wall collision first
@@ -76,58 +95,83 @@ class Interaction:
         else:
             self.firingCount = 0
 
+        if self.twoPlayer:
+            if self.kbd.w:
+                self.uCar2.rotator(False)
+            if self.kbd.s:
+                self.uCar2.rotator(True)
+
+            if self.kbd.d:
+                if self.uCar2.vel.length() > 10:
+                    pass
+                else:
+                    # self.uCar2.vel.add(Vector((0.05, 0)))
+                    self.uCar2.animate = True
+                    self.bg.vel.sub(Vector((0.05, 0)))
+                    for i in self.trees:
+                        i.vel.sub(Vector((0.05, 0)))
+            else:
+                self.uCar2.animate = False
+
+            if self.kbd.a:
+                #  self.uCar2.vel.add(Vector((-0.05, 0)))
+                self.bg.vel.add(Vector((0.05, 0)))
+                for i in self.trees:
+                    i.vel.add(Vector((0.05, 0)))
+
+            if self.kbd.f:
+                if self.firingCount2 >= 1:
+                    pass
+                else:
+                    image = simplegui.load_image('https://i.imgur.com/RVi7F76.png')
+                    missile = Weapon(Vector((self.uCar2.pos.x + self.uCar2.frameWidth / 2, self.uCar2.pos.y)),
+                                 Vector((5, self.uCar2.vel.y)), image, 4, 4)
+                    self.weapons.append(missile)
+                    self.firingCount2 += 1
+            else:
+                self.firingCount2 = 0
+
         # For all userCar corners and offsets. Check with all other ones.
-        for i in self.uCar.corners:
-            for j in self.uCar.offsets:
-                if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
+        for x in self.cars:
+            for i in x.corners:
+                for j in x.offsets:
+                    if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
 
+                        # x.lives = 0
+                        x.pos = Vector((50, 337))
+                        self.removeLife(x)
 
-                    #self.uCar.lives = 0
-                    self.uCar.pos = Vector((50, 337))
-                    if (self.uCar.c_health_status==3):
-                        self.uCar.c_health_status = 2
-                    elif(self.uCar.c_health_status==2):
-                        self.uCar.c_health_status = 1
-                    elif(self.uCar.c_health_status==1):
-                        self.uCar.c_health_status = 0
+                        x.update()
+                        break
 
-                    self.uCar.update()
-                    break
+                        # print("Car hitting top wall")
 
+                    if i.y > 600 - self.w2.border and j.y > 600 - self.w2.border:
+                        # x.lives = 0
 
+                        x.pos = Vector((50, 675 / 2))
+                        # break
 
-                    #print("Car hitting top wall")
+                        self.removeLife(x)
 
-                if i.y > 600 - self.w2.border and j.y > 600 - self.w2.border:
-                    #self.uCar.lives = 0
+                        x.update()
+                        break
+                        # print("Car hitting bottom wall")
 
-                    self.uCar.pos = Vector((50, 675/2))
-                    #break
-
-                    if (self.uCar.c_health_status==3):
-                        self.uCar.c_health_status = 2
-                    elif(self.uCar.c_health_status==2):
-                        self.uCar.c_health_status = 1
-                    elif(self.uCar.c_health_status==1):
-                        self.uCar.c_health_status = 0
-
-                    self.uCar.update()
-                    break
-                    #print("Car hitting bottom wall")
-
-                # For every obstacle
+                    # For every obstacle
 
                 for v in self.obstacles:
                     if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
                         if i.y > v.offT.y and i.y < v.offB.y or j.y > v.offT.y and j.y < v.offB.y:
-                            self.uCar.lives -= 1  # Register car hit with
+                            self.removeLife(x)  # Register car hit with
+                            self.obstacles.remove(v)
+                            x.update()
                             v.animate = True
                             print("Car hitting obstacle")
 
         for x in self.weapons:
-            if x.pos.x > self.canvW or x.frameElapsed > x.row*x.column:  # Remove if gone off or animated once.
+            if x.pos.x > self.canvW or x.frameElapsed > x.row * x.column:  # Remove if gone off or animated once.
                 self.weapons.remove(x)
-
 
             for i in x.corners:
                 for j in x.offsets:
@@ -156,9 +200,6 @@ class Interaction:
                                 print(" Rocket - Obstacle hit")
                                 self.obstacles.remove(v)
                                 x.animate = True
-
-
-
 
         # Check Car collision with obstacle objects.
 

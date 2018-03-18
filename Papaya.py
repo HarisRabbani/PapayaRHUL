@@ -45,10 +45,11 @@ health_0= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_0.png
 health_1= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_1.png')
 health_2= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_2.png')
 health_3= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_3.png')
+twoPlayer = False
 
 
-
-userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5,health_0,health_1,health_2,health_3)
+userCar = UserCar(userCarImg, Vector((0, DISPLAYH*0.25)), 5, 5,health_0,health_1,health_2,health_3, 1)
+userCar2 = UserCar(userCarImg, Vector((0, DISPLAYH*0.75)), 5, 5,health_0,health_1,health_2,health_3, 2)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 bg = None
@@ -89,6 +90,8 @@ def drawAllElements(canvas):
     interaction.draw(canvas)
     Papaya.draw(canvas)
     userCar.draw(canvas)
+    if twoPlayer:
+        userCar2.draw(canvas)
 
 def updateAllElements(canvas):
     bg.update()
@@ -96,9 +99,11 @@ def updateAllElements(canvas):
     tree1.update()
     tree2.update()
     userCar.update()
-    userCar.update()
+    if twoPlayer:
+        userCar2.update()
     interaction.update()
     Papaya.update()
+
 
 def drawWelcomeScreen(canvas):
     drawAllElements(canvas)
@@ -233,7 +238,7 @@ def enter_level1():
     tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
     trees = True
     global interaction
-    interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, twoPlayer)
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
@@ -249,7 +254,7 @@ def enter_level2():
     tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
     trees = True
     global interaction
-    interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, twoPlayer)
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
@@ -265,7 +270,7 @@ def enter_level3():
     tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
     trees = True
     global interaction
-    interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, twoPlayer)
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)

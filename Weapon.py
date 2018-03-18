@@ -20,8 +20,7 @@ class Weapon(Sprite):
     def draw(self, canvas):
             canvas.draw_image(self.img, (self.x, self.y), (self.frameWidth, self.frameHeight),
                               self.pos.getP(), (50, 50), math.pi/2)
-            for i in self.offsets:
-                canvas.draw_point(i.getP(), "Black")
+
             # Code that does the sprite stuff.
 
     def bounce(self, normal):
