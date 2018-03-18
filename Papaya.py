@@ -32,7 +32,6 @@ papayaImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Papaya_ima
 explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/sprites/explosion-spritesheet.png')
 
 # x values should be updated and not y values by any +ve values
-treeImg = simplegui.load_image('https://i.imgur.com/PxerxUP.png')
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
 welcomeScreenButtonImg = simplegui.load_image("https://i.imgur.com/EuhSFX1.jpg")
 welcomeScreenBG = simplegui.load_image("https://i.imgur.com/HEsDK8S.jpg")
@@ -50,8 +49,6 @@ health_3= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_3.png
 
 
 userCar = UserCar(userCarImg, Vector((0, DISPLAYH/2)), 5, 5,health_0,health_1,health_2,health_3)
-tree1 = Tree(treeImg, 0+treeImg.get_height()/2, DISPLAYW)
-tree2 = Tree(treeImg, DISPLAYH-treeImg.get_height()/2, DISPLAYW)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 bg = None
@@ -112,7 +109,6 @@ def enter_game():
     frame.set_draw_handler(drawGame)
 
 
-interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
 welcomeScreenGo = Button("https://i.imgur.com/EuhSFX1.jpg", (500, 500), enter_game)
 Papaya=PapayaPick(papayaImg,Vector((random.randrange(300,950),random.randrange(150,525))),(papayaImg.get_width()),papayaImg.get_height())
 
@@ -230,7 +226,14 @@ def enter_level1():
     bgImage = simplegui.load_image("https://i.imgur.com/erXGov3.png")
     global bg
     bg = Background(bgImage, Vector((0, bgImage.get_height()/2)), DISPLAYW)
+    global treeImg
+    treeImg = simplegui.load_image("https://i.imgur.com/wzEHLeH.png")
+    global tree1, tree2
+    tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
+    tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
     trees = True
+    global interaction
+    interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
@@ -239,7 +242,14 @@ def enter_level2():
     bgImage = simplegui.load_image("https://i.imgur.com/9TUjah2.png")
     global bg
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
+    global treeImg
+    treeImg = simplegui.load_image("https://i.imgur.com/pLxOKWq.png")
+    global tree1, tree2
+    tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
+    tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
     trees = True
+    global interaction
+    interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
@@ -248,7 +258,14 @@ def enter_level3():
     bgImage = simplegui.load_image("https://i.imgur.com/AljXcD9.png")
     global bg
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
+    global treeImg
+    treeImg = simplegui.load_image("https://i.imgur.com/WzbnC9R.png")
+    global tree1, tree2
+    tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
+    tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
     trees = True
+    global interaction
+    interaction = Interaction(userCar, kbd, [tree1, tree2], w1, w2, obstacles)
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
