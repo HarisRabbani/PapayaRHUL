@@ -34,7 +34,7 @@ explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/s
 # x values should be updated and not y values by any +ve values
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
 welcomeScreenButtonImg = simplegui.load_image("https://i.imgur.com/EuhSFX1.jpg")
-welcomeScreenBG = simplegui.load_image("https://i.imgur.com/HEsDK8S.jpg")
+welcomeScreenBG = simplegui.load_image("https://i.imgur.com/kpqKIoh.png")
 obstacle1img = simplegui.load_image("https://i.imgur.com/waPEQMH.png")
 obstacle2img = simplegui.load_image("https://i.imgur.com/8HA81OA.png")
 OBS = [obstacle1img, obstacle2img]
@@ -45,7 +45,6 @@ health_0= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_0.png
 health_1= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_1.png')
 health_2= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_2.png')
 health_3= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_3.png')
-twoPlayer = False
 
 
 userCar = UserCar(userCarImg, Vector((0, DISPLAYH*0.25)), 5, 5,health_0,health_1,health_2,health_3, 1)
@@ -67,7 +66,6 @@ kbd = Keyboard()
 def click(pos):
     for x in range(0, len(arrayButton)):
         if arrayButton[x].contains(pos):
-            print("button")
             arrayButton[x].clickBtn()
 
 def draw(canvas):
@@ -75,6 +73,22 @@ def draw(canvas):
     canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (DISPLAYW/2,DISPLAYH/2), (image.get_width(), image.get_height()))
     for x in range(0, len(arrayButton)):
         arrayButton[x].draw(canvas)
+
+def twoPlayers():
+    global twoPlayer
+    twoPlayer = True
+    enter_level_select()
+
+def clickPlayerSelect(pos):
+    for x in range(0, len(playerButton)):
+        if playerButton[x].contains(pos):
+            playerButton[x].clickBtn()
+
+def drawPlayerSelect(canvas):
+    image = simplegui.load_image("https://i.imgur.com/8tYYDrc.png")
+    canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (DISPLAYW/2,DISPLAYH/2), (image.get_width(), image.get_height()))
+    for x in range(0, len(playerButton)):
+        playerButton[x].draw(canvas)
 
 
 def clickWelcomeScreen(pos):
@@ -104,6 +118,9 @@ def updateAllElements(canvas):
     interaction.update()
     Papaya.update()
 
+def enterPlayerSelect():
+    frame.set_mouseclick_handler(clickPlayerSelect)
+    frame.set_draw_handler(drawPlayerSelect)
 
 def drawWelcomeScreen(canvas):
     drawAllElements(canvas)
@@ -193,7 +210,7 @@ def spawnBomb():
     bombs.append(bomb)
 
 def drawHelp(canvas):
-    helpImage = simplegui.load_image("https://i.imgur.com/AX0ZNyM.png")
+    helpImage = simplegui.load_image("https://i.imgur.com/kpqKIoh.png")
     canvas.draw_image(helpImage, (helpImage.get_width()/2, helpImage.get_height()/2), (helpImage.get_width(),helpImage.get_height()), (DISPLAYW/2, DISPLAYH/2), (helpImage.get_width(), helpImage.get_height()))
     helpButtonBack.draw(canvas)
 
@@ -203,7 +220,7 @@ def clickHelp(pos):
 
 def enter_help():
     global helpButtonBack
-    helpButtonBack = Button("https://i.imgur.com/lOd9C7k.png", (650,600), enterMainMenu)
+    helpButtonBack = Button("https://i.imgur.com/lOd9C7k.png", (50, 50), enterMainMenu)
     frame.set_mouseclick_handler(clickHelp)
     frame.set_draw_handler(drawHelp)
 
@@ -279,10 +296,15 @@ def enterMainMenu():
     frame.set_mouseclick_handler(clickMainMenu)
     frame.set_draw_handler(draw)
 
-start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enter_level_select)
+start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enterPlayerSelect)
 help = Button("https://i.imgur.com/6OfeKop.png", (470, 450), enter_help)
 quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
+
+onePlayer = Button("https://i.imgur.com/FlJvii8.png", (120, 450), enter_level_select)
+twoPlayerB = Button("https://i.imgur.com/deyd3aW.png", (820, 450), twoPlayers)
+playerButton = [onePlayer, twoPlayerB]
+
 frame = simplegui.create_frame("Papaya Racers", DISPLAYW, DISPLAYH)
 frame.set_mouseclick_handler(clickMainMenu)
 enterMainMenu()#automatically passes on the canvas
