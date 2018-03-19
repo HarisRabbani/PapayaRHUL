@@ -63,15 +63,15 @@ frameElapsed = 0
 
 kbd = Keyboard()
 global treeImg
-treeImg = simplegui.load_image("https://i.imgur.com/pLxOKWq.png")
-global tree1, tree2
-tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
-tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
+treeImg = None
+tree1 = None
+tree2 = None
 interaction = None
 
 
+
 #interaction = Interaction(userCar, kbd)
-interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya,twoPlayer)
+
 
 
 def click(pos):
@@ -298,7 +298,7 @@ def spawnBomb():
     bombs.append(bomb)
 
 def drawHelp(canvas):
-    helpImage = simplegui.load_image("https://i.imgur.com/kpqKIoh.png")
+    helpImage = simplegui.load_image("https://i.imgur.com/yx9xDnx.png")
     canvas.draw_image(helpImage, (helpImage.get_width()/2, helpImage.get_height()/2), (helpImage.get_width(),helpImage.get_height()), (DISPLAYW/2, DISPLAYH/2), (helpImage.get_width(), helpImage.get_height()))
     helpButtonBack.draw(canvas)
 
@@ -349,8 +349,12 @@ def stopTimers():
 
 def enter_level1():
     bgImage = simplegui.load_image("https://i.imgur.com/erXGov3.png")
-    global bg
+    global bg, treeImg, tree1, tree2, interaction
     bg = Background(bgImage, Vector((0, bgImage.get_height()/2)), DISPLAYW)
+    treeImg = simplegui.load_image("https://i.imgur.com/ZCBKQ0f.png")
+    tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
+    tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, bombs, papaya, twoPlayer)
     interaction.passBack(bg)
     enterWelcomeScreen()
 
@@ -358,17 +362,24 @@ def enter_level1():
 
 def enter_level2():
     bgImage = simplegui.load_image("https://i.imgur.com/9TUjah2.png")
-    global bg
+    global bg, treeImg, tree1, tree2, interaction
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
-    trees = True
+    treeImg = simplegui.load_image("https://i.imgur.com/OoT9Mzv.png")
+    tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
+    tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, bombs, papaya, twoPlayer)
     interaction.passBack(bg)
     enterWelcomeScreen()
 
 
 def enter_level3():
     bgImage = simplegui.load_image("https://i.imgur.com/AljXcD9.png")
-    global bg
+    global bg, treeImg, tree1, tree2, interaction
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
+    treeImg = simplegui.load_image("https://i.imgur.com/354gDYv.png")
+    tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
+    tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, bombs, papaya, twoPlayer)
     interaction.passBack(bg)
     enterWelcomeScreen()
 
