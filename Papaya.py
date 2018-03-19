@@ -104,6 +104,10 @@ def clickWelcomeScreen(pos):
     if welcomeScreenGo.contains(pos):
         welcomeScreenGo.clickBtn()
 
+def enterWelcomeScreen():
+    frame.set_mouseclick_handler(clickWelcomeScreen)
+    frame.set_draw_handler(drawWelcomeScreen)
+
 def gameOver():
     stopTimers()
     # STOP UPDATING EVERYTHING HERE
@@ -297,8 +301,7 @@ def enter_level1():
     global bg
     bg = Background(bgImage, Vector((0, bgImage.get_height()/2)), DISPLAYW)
     interaction.passBack(bg)
-    frame.set_mouseclick_handler(clickWelcomeScreen)
-    frame.set_draw_handler(drawWelcomeScreen)
+    enterWelcomeScreen()
 
 
 
@@ -308,8 +311,7 @@ def enter_level2():
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     trees = True
     interaction.passBack(bg)
-    frame.set_mouseclick_handler(clickWelcomeScreen)
-    frame.set_draw_handler(drawWelcomeScreen)
+    enterWelcomeScreen()
 
 
 def enter_level3():
@@ -317,8 +319,7 @@ def enter_level3():
     global bg
     bg = Background(bgImage, Vector((bgImage.get_width()/2, bgImage.get_height()/2)), DISPLAYW)
     interaction.passBack(bg)
-    frame.set_mouseclick_handler(clickWelcomeScreen)
-    frame.set_draw_handler(drawWelcomeScreen)
+    enterWelcomeScreen()
 
 
 def enterMainMenu():
