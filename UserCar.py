@@ -1,10 +1,7 @@
 from Vector import Vector
 from Sprite import Sprite
 
-class UserCar(Sprite):
-
-#user's health will be updated below
-#we will need to have a current variable which keeps track of user's health
+class UserCar(Sprite): # THE PLAYER CLASS
 
     def __init__(self, image, pos, row, column, health0, health1, health2, health3, playerNum):
         super().__init__(image, row, column, pos)
@@ -44,7 +41,10 @@ class UserCar(Sprite):
         self.papayaCollected = 0
         self.c_health_status = 3
         self.health_img = self.img_health_3
-        self.pos = Vector((0 + self.frameWidth / 2, 1000 * 0.25))
+        if self.playerNum == 2:
+            self.pos = Vector((0 + self.frameWidth / 2, 1000 * 0.75))
+        else:
+            self.pos = Vector((0 + self.frameWidth / 2, 1000 * 0.25))
         self.vel = Vector((5, 0))
         self.rotation = 0
         self.update()
@@ -52,15 +52,15 @@ class UserCar(Sprite):
 
 
     def update(self):
-        if (self.animate == False) or (self.update_x() and self.update_y()):
+        if (self.animate == False) or (self.update_x() and self.update_y()):  # Code to allow you to show the boost animation
             self.frameIndex[0] = 0
             self.frameIndex[1] = 0
             self.update_x()
             self.update_y()
         super(UserCar, self).update()
         self.pos.y += self.vel.y
-        super().defineOffsets(self.pos)
-        super().defineCorners(self.pos)
+        super().defineOffsets(self.pos) # Code to define the new offsets based on the postiion
+        super().defineCorners(self.pos) 
 
         #Score is increased by other factors too.
 
@@ -74,7 +74,6 @@ class UserCar(Sprite):
             self.health_img = self.img_health_0
 
     def Collisonwall(self):
-        #REDO THIS CODE, CAR SHOULD BE ADDED TO INTERACTION
         if self.pos.y < 75 + self.imgDim[1] or self.pos.y + self.imgDim[1] > 600:
             return True
         else:

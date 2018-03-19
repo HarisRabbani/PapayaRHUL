@@ -2,7 +2,7 @@ from Vector import Vector
 import math
 
 
-class WeaponCollision:
+class WeaponCollision: # Old code - This could be used.
     def __init__(self):
         self.weapons = []
         self.walls = []

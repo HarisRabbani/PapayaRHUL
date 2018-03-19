@@ -1,13 +1,9 @@
 from Vector import Vector
-from Weapon import Weapon
 from Wall import Wall
-from WeaponCollision import WeaponCollision
 from KeyboardClass import Keyboard
 from Button import Button
 from UserCar import UserCar
 from Tree import Tree
-from Sprite import Sprite
-from Interaction import Interaction
 from Interaction import Interaction
 from Background import Background
 from Obstacle import Obstacle
@@ -22,16 +18,15 @@ except ImportError:
 import math
 import random
 
+# The main class - AKA THE GAME class. This is where all the game logic is held.
+
 DISPLAYW = 1000
 DISPLAYH = 675
 
 userCarImg = simplegui.load_image('https://i.imgur.com/uB67l2f.png')
-#image enemy cars
-
+user2img = simplegui.load_image("https://i.imgur.com/Zgkwn3T.png")
 papayaImg = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Papaya_image.jpg')
 explosionSheet = simplegui.load_image('http://www.cs.rhul.ac.uk/courses/CS1830/sprites/explosion-spritesheet.png')
-
-# x values should be updated and not y values by any +ve values
 car_crash = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/carcrash.png')
 welcomeScreenButtonImg = simplegui.load_image("https://i.imgur.com/EuhSFX1.jpg")
 welcomeScreenBG = simplegui.load_image("https://i.imgur.com/kpqKIoh.png")
@@ -41,26 +36,24 @@ OBS = [obstacle1img, obstacle2img]
 rowCols = [(3, 3), (2, 4)]
 
 #health images
-health_0= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_0.png')
-health_1= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_1.png')
-health_2= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_2.png')
-health_3= simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_3.png')
+health_0 = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_0.png')
+health_1 = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_1.png')
+health_2 = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_2.png')
+health_3 = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Health_3.png')
 global twoPlayer
 twoPlayer = False
 userCar = UserCar(userCarImg, Vector((0, DISPLAYH*0.25)), 5, 5,health_0,health_1,health_2,health_3, 1)
-userCar2 = UserCar(userCarImg, Vector((0, DISPLAYH*0.75)), 5, 5,health_0,health_1,health_2,health_3, 2)
+userCar2 = UserCar(user2img, Vector((0, DISPLAYH*0.75)), 5, 5,health_0,health_1,health_2,health_3, 2)
 w1 = Wall((0, 75), (DISPLAYW, 75), 12, 'Green', Vector((0, 1)))
 w2 = Wall((0, 600), (DISPLAYW, 600), 12, 'Green', Vector((0, -1)))
 bg = None
 bombs = []
 levelImage = ""
 obstacles = []
-papaya=[]
+papaya = []
 score = 0
 timeElapsed = 0
 frameElapsed = 0
-
-
 kbd = Keyboard()
 global treeImg
 treeImg = None
@@ -69,15 +62,11 @@ tree2 = None
 interaction = None
 
 
-
-#interaction = Interaction(userCar, kbd)
-
-
-
 def click(pos):
     for x in range(0, len(arrayButton)):
         if arrayButton[x].contains(pos):
             arrayButton[x].clickBtn()
+
 
 def draw(canvas):
     image = simplegui.load_image("https://i.imgur.com/8tYYDrc.png")
@@ -85,15 +74,20 @@ def draw(canvas):
     for x in range(0, len(arrayButton)):
         arrayButton[x].draw(canvas)
 
+
 def twoPlayers():
-    global interaction
-    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya ,True)
+    global interaction, twoPlayer
+    #interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya ,True)
+    twoPlayer = True
     enter_level_select()
 
+
 def onePlayers():
-    global interaction
-    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya, False)
+    global interaction, twoPlayer
+    #interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya, False)
+    twoPlayer = False
     enter_level_select()
+
 
 def clickPlayerSelect(pos):
     for x in range(0, len(playerButton)):
@@ -147,9 +141,9 @@ def gameOver():
     frame.set_draw_handler(drawGameOver)
 
     # Display Score, final score, display time elapsed etc, display papaya picked.
-    # Restart Game by entering welcome screen - OR - Enter main menu --> Add this code
 
-def reset():
+
+def reset(): # Method to reset all the variables so that the user can restart the game
     for i in obstacles:
         obstacles.remove(i)
 
@@ -262,16 +256,6 @@ def drawGame(canvas):
 
 
 
-#PUT LOGIC SOMEWHERE FOR BOOSTING
-#if (papaya_time == True and obj_Int.touchPapaya == False):
-#draw_Papaya(canvas)
-
-   # if (interaction.carCollision == True):
-    #    explosionSprite.draw(canvas, userCar.pos.x, userCar.pos.y)
-     #   explosionSprite.animate = True
-
-        #Logic to contain all explosions on screen and hiding what isn't being exploded.
-
 
 def timer_handler():
    #print("Papaya Spawn Stuff")
@@ -307,6 +291,7 @@ def clickLevelSelect(pos):
     for x in range(0, len(levelButton)):
         if(levelButton[x].contains(pos)):
             levelButton[x].clickBtn()
+
 def spawnBomb():
     bomb = Bomb(tree1.vel.x)
     bombs.append(bomb)

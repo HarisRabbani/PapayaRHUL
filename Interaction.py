@@ -84,7 +84,6 @@ class Interaction:
             if self.uCar.vel.length() > 10:
                 pass
             else:
-                # self.uCar.vel.add(Vector((0.05, 0)))
                 self.uCar.animate = True
                 self.bg.vel.sub(Vector((0.05, 0)))
                 for i in self.trees:
@@ -93,7 +92,6 @@ class Interaction:
             self.uCar.animate = False
 
         if self.kbd.left:
-            #  self.uCar.vel.add(Vector((-0.05, 0)))
             self.bg.vel.add(Vector((0.05, 0)))
             for i in self.trees:
                 i.vel.add(Vector((0.05, 0)))
@@ -122,27 +120,23 @@ class Interaction:
                 if self.uCar2.vel.length() > 10:
                     pass
                 else:
-                    # self.uCar2.vel.add(Vector((0.05, 0)))
                     self.uCar2.animate = True
                     self.bg.vel.sub(Vector((0.05, 0)))
                     for i in self.trees:
                         i.vel.sub(Vector((0.05, 0)))
             else:
                 self.uCar2.animate = False
-
             if self.kbd.a:
-                #  self.uCar2.vel.add(Vector((-0.05, 0)))
                 self.bg.vel.add(Vector((0.05, 0)))
                 for i in self.trees:
                     i.vel.add(Vector((0.05, 0)))
-
             if self.kbd.f:
                 if self.firingCount2 >= 1:
                     pass
                 else:
                     image = simplegui.load_image('https://i.imgur.com/RVi7F76.png')
                     missile = Weapon(Vector((self.uCar2.pos.x + self.uCar2.frameWidth / 2, self.uCar2.pos.y)),
-                                 Vector((5, self.uCar2.vel.y)), image, 4, 4)
+                                     Vector((5, self.uCar2.vel.y)), image, 4, 4)
                     self.weapons.append(missile)
 
                     self.fire.play()
@@ -157,16 +151,15 @@ class Interaction:
 
                     for b in self.bombs:
                         if b.hit(x):
-                           self.removeLife(x)
-                           self.bombs.remove(b)
-                           self.exp.play()
-                           x.update()
+                            self.removeLife(x)
+                            self.bombs.remove(b)
+                            self.exp.play()
+                            x.update()
 
                     for v in self.papaya:
                         if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
                             if i.y > v.offT.y and i.y < v.offB.y or j.y > v.offT.y and j.y < v.offB.y:
-                                print(" Touched a papaya")
-                                x.papayaCollected +=1
+                                x.papayaCollected += 1
                                 self.papaya.remove(v)
 
 
@@ -176,8 +169,8 @@ class Interaction:
                         # x.lives = 0
                         x.pos = Vector((50, 337))
                         self.removeLife(x)
-                        crash = simplegui._load_local_sound("crash.ogg")
-                        crash.play()
+
+                        self.crash.play()
 
                         x.update()
                         break
@@ -196,11 +189,6 @@ class Interaction:
 
                         x.update()
                         break
-                        # print("Car hitting bottom wall")
-
-                    # For every obstacle
-
-
 
                 for v in self.obstacles:
                     if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
@@ -208,7 +196,6 @@ class Interaction:
                             self.crashed = True
                             self.removeLife(x)  # Register car hit with
                             v.animateOnce()
-
                             self.crash.play()
                             self.obstacles.remove(v)
                             x.update()
@@ -221,7 +208,7 @@ class Interaction:
                 for j in x.offsets:
 
                     if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
-                        if self.inCollision == False:
+                        if self.inCollision == False: # Making sure that the missle doesn't get stuck to the wall.
                             x.animate = True
 
                             self.exp.play()
@@ -249,10 +236,3 @@ class Interaction:
                                 self.exp.play()
                                 self.obstacles.remove(v)
                                 x.animate = True
-
-        # Check Car collision with obstacle objects.
-
-    # else:
-    # call game crash
-    # then game over interface
-    # obj_explosion_spriteS=True
