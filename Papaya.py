@@ -55,6 +55,7 @@ bg = None
 bombs = []
 levelImage = ""
 obstacles = []
+papaya=[]
 score = 0
 timeElapsed = 0
 frameElapsed = 0
@@ -70,7 +71,7 @@ interaction = None
 
 
 #interaction = Interaction(userCar, kbd)
-
+interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya,twoPlayer)
 
 
 def click(pos):
@@ -86,12 +87,12 @@ def draw(canvas):
 
 def twoPlayers():
     global interaction
-    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, True)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya ,True)
     enter_level_select()
 
 def onePlayers():
     global interaction
-    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, False)
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles,bombs,papaya, False)
     enter_level_select()
 
 def clickPlayerSelect(pos):
@@ -161,7 +162,7 @@ def drawAllElements(canvas):
     w1.draw(canvas)
     w2.draw(canvas)
     interaction.draw(canvas)
-    Papaya.draw(canvas)
+    #Papaya.draw(canvas)
     userCar.draw(canvas)
     if interaction.explosion:
         pass #  Draw explosion here
@@ -185,7 +186,7 @@ def updateAllElements(canvas):
     if interaction.twoPlayer:
         userCar2.update()
     interaction.update()
-    Papaya.update()
+    #Papaya.update()
     if interaction.twoPlayer and (userCar.c_health_status==0 and userCar2.c_health_status==0):
         gameOver()
     if (interaction.twoPlayer == False) and userCar.c_health_status==0:
@@ -206,7 +207,7 @@ def enter_game():
 
 
 welcomeScreenGo = Button("https://i.imgur.com/EuhSFX1.jpg", (500, 500), enter_game)
-Papaya=PapayaPick(papayaImg,Vector((random.randrange(300,950),random.randrange(150,525))),(papayaImg.get_width()),papayaImg.get_height(), tree1.vel)
+#Papaya=PapayaPick(papayaImg,Vector((random.randrange(300,950),random.randrange(150,525))),(papayaImg.get_width()),papayaImg.get_height(), tree1.vel)
 
 #parameter passed in as canvas
 def drawGame(canvas):
@@ -233,8 +234,12 @@ def drawGame(canvas):
         bom.update()
         bom.draw(canvas)
 
-
-
+    for paps in papaya:
+        if paps.pos.x < 0 - paps.width/2:
+            papaya.remove(paps)
+        paps.vel = tree1.vel
+        paps.update()
+        paps.draw(canvas)
 
 
 
@@ -264,10 +269,15 @@ def spawnObstacle():
 
 
 
+def spawn_Papaya():
+    Papaya_obj = PapayaPick(papayaImg, Vector((random.randrange(300, 950), random.randrange(150, 525))),
+                            (papayaImg.get_width()), papayaImg.get_height(), tree1.vel)
 
-def draw_Papaya(canvas):
-    pass
+    papaya.append(Papaya_obj)
+
+
     #canvas.draw_image(papayaImg, (25, 25), (50, 50), (papaya_x, papaya_y), (50, 50))
+
 
 def clickMainMenu(pos):
     for x in range(0, len(arrayButton)):
@@ -321,11 +331,13 @@ def startTimers():
     timer.start()
     obstacleSpawn.start()
     bombSpawn.start()
+    papayaSpawn.start()
 
 def stopTimers():
     timer.stop()
     obstacleSpawn.stop()
     bombSpawn.stop()
+    papayaSpawn.stop()
 
 def enter_level1():
     bgImage = simplegui.load_image("https://i.imgur.com/erXGov3.png")
@@ -378,5 +390,5 @@ frame.set_keyup_handler(kbd.keyUp)
 timer = simplegui.create_timer(5000, timer_handler)
 obstacleSpawn = simplegui.create_timer(4500, spawnObstacle)
 bombSpawn = simplegui.create_timer(6000, spawnBomb)
-
+papayaSpawn=simplegui.create_timer(5000,spawn_Papaya)
 frame.start()

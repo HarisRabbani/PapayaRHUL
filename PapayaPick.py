@@ -3,12 +3,16 @@ try:
 except ImportError:
     import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from Vector import Vector
+from Vector import Vector
 
-class PapayaPick:
+from Sprite import Sprite
+
+class PapayaPick(Sprite):
 
 
     def __init__(self,img,pos,width,height, vel):
         self.img = img
+        super().__init__(img, 1,1, pos)
         self.pos=pos
         self.vel=vel
         self.width=width
@@ -23,6 +27,11 @@ class PapayaPick:
 
     def update(self):
         self.pos.add(self.vel)
+
+        super().update()
+        super().defineOffsets(self.pos)
+        super().defineCorners(self.pos)
+
         #possible code used for the collision detection with the car
 """
         if (self.touchPapaya) == False:

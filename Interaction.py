@@ -13,7 +13,7 @@ import random
 
 class Interaction:
 
-    def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs, twoPlayer):
+    def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs,bombs,papaya ,twoPlayer):
         self.canvW = 1000
         self.uCar = usr_car
         self.uCar2 = usrCar2
@@ -35,13 +35,14 @@ class Interaction:
         self.touchPapaya = False
         self.offScreen = False  # WHEN TRUE - GAME SHOULD END
         self.weapons = []
-        self.bombs = None
+        self.bombs = bombs
         self.walls = [w1, w2]
         self.inCollision = False
         self.firingCount = 0
         self.firingCount2 = 0
         self.crashed = False
         self.explosion = False
+        self.papaya=papaya
 
     def passBack(self, bg):
         self.bg = bg
@@ -104,7 +105,6 @@ class Interaction:
             self.firingCount = 0
 
         if self.twoPlayer:
-            print("HEREEHBrfhebvfjhbsdfbgs")
             if self.kbd.w:
                 self.uCar2.rotator(False)
             if self.kbd.s:
@@ -144,6 +144,16 @@ class Interaction:
         for x in self.cars:
             for i in x.corners:
                 for j in x.offsets:
+
+                    for v in self.papaya:
+                        if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
+                            if i.y > v.offT.y and i.y < v.offB.y or j.y > v.offT.y and j.y < v.offB.y:
+                                print(" Touched a papaya")
+                                x.papayaCollected +=1
+                                self.papaya.remove(v)
+
+
+
                     if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
 
                         # x.lives = 0
