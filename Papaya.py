@@ -134,6 +134,7 @@ def gameOver():
     engine.pause()
     engine.rewind()
     # STOP UPDATING EVERYTHING HERE
+    reset()
     global finalScore
     finalScore = (userCar.papayaCollected + userCar2.papayaCollected) * score
     global finalTime
@@ -144,8 +145,21 @@ def gameOver():
         papayaCollectedTotal += userCar2.papayaCollected
     frame.set_mouseclick_handler(clickGameOver)
     frame.set_draw_handler(drawGameOver)
+
     # Display Score, final score, display time elapsed etc, display papaya picked.
     # Restart Game by entering welcome screen - OR - Enter main menu --> Add this code
+
+def reset():
+    for i in obstacles:
+        obstacles.remove(i)
+
+    for b in bombs:
+        bombs.remove(b)
+    global score, userCar, userCar2, timeElapsed
+    score = 0
+    timeElapsed = 0
+    userCar.reset()
+    userCar2.reset()
 
 
 
@@ -211,7 +225,7 @@ def enter_game():
 
 
 welcomeScreenGo = Button("https://i.imgur.com/EuhSFX1.jpg", (500, 500), enter_game)
-#Papaya=PapayaPick(papayaImg,Vector((random.randrange(300,950),random.randrange(150,525))),(papayaImg.get_width()),papayaImg.get_height(), tree1.vel)
+
 
 #parameter passed in as canvas
 def drawGame(canvas):

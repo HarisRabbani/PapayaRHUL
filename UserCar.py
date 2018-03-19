@@ -39,6 +39,15 @@ class UserCar(Sprite):
             canvas.draw_image(self.health_img, (75 / 2, 30 / 2), (75, 30), (200, 50), (75, 30))  # hard coded values
 
 
+    def reset(self):
+
+        self.papayaCollected = 0
+        self.c_health_status = 3
+        self.health_img = self.img_health_3
+        self.pos = Vector((0 + self.frameWidth / 2, 1000 * 0.25))
+        self.vel = Vector((5, 0))
+        self.rotation = 0
+        self.update()
 
 
 
@@ -73,14 +82,14 @@ class UserCar(Sprite):
 
     def rotator(self, direction):  # Direction is a boolean which represents which way should be turned
         if not direction:
-            if self.rotation < -0.45:
+            if self.rotation < -0.5:
                 pass
             else:
                 self.rotation -= 1 / 180 * 5
                 self.vel.rotateRad(-1 / 180 * 5)
 
         if direction:
-            if self.rotation > 0.45:
+            if self.rotation > 0.5:
                 pass
             else:
                 self.rotation += 1 / 180 * 5
