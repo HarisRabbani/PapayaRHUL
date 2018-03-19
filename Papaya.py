@@ -114,13 +114,37 @@ def enterWelcomeScreen():
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
 
+def clickGameOver(pos):
+    for x in range(0, len(gameOverButtons)):
+        if gameOverButtons[x].contains(pos):
+            gameOverButtons[x].clickBtn()
+
+def drawGameOver(canvas):
+    image = simplegui.load_image("https://i.imgur.com/rvvHZnj.png")
+    canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (DISPLAYW/2,DISPLAYH/2), (image.get_width(), image.get_height()))
+    canvas.draw_text("Final Score: " + str(finalScore), (DISPLAYW/2-100, 350), 18, "Black", "monospace")
+    canvas.draw_text("Final Time: " + str(papayaCollectedTotal), (DISPLAYW/2-100, 300), 18, "Black", "monospace")
+    canvas.draw_text("Final Time: " + str(finalTime), (DISPLAYW/2-100, 400), 18, "Black", "monospace")
+    for x in range(0, len(gameOverButtons)):
+        gameOverButtons[x].draw(canvas)
+
 def gameOver():
     stopTimers()
     # STOP UPDATING EVERYTHING HERE
+    global finalScore
     finalScore = (userCar.papayaCollected + userCar2.papayaCollected) * score
+    global finalTime
     finalTime = timeElapsed
+    global papayaCollectedTotal
+    papayaCollectedTotal = userCar.papayaCollected
+    if interaction.twoPlayer:
+        papayaCollectedTotal += userCar2.papayaCollected
+    frame.set_mouseclick_handler(clickGameOver)
+    frame.set_draw_handler(drawGameOver)
     # Display Score, final score, display time elapsed etc, display papaya picked.
     # Restart Game by entering welcome screen - OR - Enter main menu --> Add this code
+
+
 
 def drawText(canvas):
     print("here")
@@ -158,7 +182,7 @@ def updateAllElements(canvas):
     userCar.update()
     if interaction.explosion:
         pass #  Update Explosion here
-    if interaction.ytwoPlayer:
+    if interaction.twoPlayer:
         userCar2.update()
     interaction.update()
     Papaya.update()
@@ -338,9 +362,13 @@ help = Button("https://i.imgur.com/6OfeKop.png", (470, 450), enter_help)
 quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
 
-onePlayer = Button("https://i.imgur.com/FlJvii8.png", (120, 450), onePlayers)
-twoPlayerB = Button("https://i.imgur.com/deyd3aW.png", (820, 450), twoPlayers)
+onePlayer = Button("https://i.imgur.com/FlJvii8.png", (180, 450), onePlayers)
+twoPlayerB = Button("https://i.imgur.com/deyd3aW.png", (800, 450), twoPlayers)
 playerButton = [onePlayer, twoPlayerB]
+
+retryB = Button("https://i.imgur.com/w8lhgPf.png",(170, 450), enterWelcomeScreen)
+mainMenuB = Button("https://i.imgur.com/AK8Yw91.png", (770, 450), enterMainMenu)
+gameOverButtons = [retryB, mainMenuB]
 
 frame = simplegui.create_frame("Papaya Racers", DISPLAYW, DISPLAYH)
 frame.set_mouseclick_handler(clickMainMenu)
