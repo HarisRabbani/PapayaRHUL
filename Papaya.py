@@ -124,13 +124,15 @@ def drawGameOver(canvas):
     image = simplegui.load_image("https://i.imgur.com/rvvHZnj.png")
     canvas.draw_image(image, (image.get_width()/2, image.get_height()/2), (image.get_width(),image.get_height()), (DISPLAYW/2,DISPLAYH/2), (image.get_width(), image.get_height()))
     canvas.draw_text("Final Score: " + str(finalScore), (DISPLAYW/2-100, 350), 18, "Black", "monospace")
-    canvas.draw_text("Final Time: " + str(papayaCollectedTotal), (DISPLAYW/2-100, 300), 18, "Black", "monospace")
+    canvas.draw_text("Total Papayas: " + str(papayaCollectedTotal), (DISPLAYW/2-100, 300), 18, "Black", "monospace")
     canvas.draw_text("Final Time: " + str(finalTime), (DISPLAYW/2-100, 400), 18, "Black", "monospace")
     for x in range(0, len(gameOverButtons)):
         gameOverButtons[x].draw(canvas)
 
 def gameOver():
     stopTimers()
+    engine.pause()
+    engine.rewind()
     # STOP UPDATING EVERYTHING HERE
     global finalScore
     finalScore = (userCar.papayaCollected + userCar2.papayaCollected) * score
@@ -176,6 +178,8 @@ def updateAllElements(canvas):
     score += 1
     if frameElapsed % 60 == 0:
         timeElapsed += 1
+
+    engine.play()
     bg.update()
     interaction.update()
     tree1.update()
@@ -332,6 +336,10 @@ def startTimers():
     obstacleSpawn.start()
     bombSpawn.start()
     papayaSpawn.start()
+    menuMusic.pause()
+    menuMusic.rewind()
+
+
 
 def stopTimers():
     timer.stop()
@@ -368,6 +376,9 @@ def enter_level3():
 def enterMainMenu():
     frame.set_mouseclick_handler(clickMainMenu)
     frame.set_draw_handler(draw)
+    menuMusic.play()
+
+
 
 start = Button("https://i.imgur.com/xoZnCmL.png", (120, 450), enterPlayerSelect)
 help = Button("https://i.imgur.com/6OfeKop.png", (470, 450), enter_help)
@@ -377,11 +388,11 @@ arrayButton = [start, help, quit]
 onePlayer = Button("https://i.imgur.com/FlJvii8.png", (180, 450), onePlayers)
 twoPlayerB = Button("https://i.imgur.com/deyd3aW.png", (800, 450), twoPlayers)
 playerButton = [onePlayer, twoPlayerB]
-
+engine = simplegui._load_local_sound("engine.ogg")
 retryB = Button("https://i.imgur.com/w8lhgPf.png",(170, 450), enterWelcomeScreen)
 mainMenuB = Button("https://i.imgur.com/AK8Yw91.png", (770, 450), enterMainMenu)
 gameOverButtons = [retryB, mainMenuB]
-
+menuMusic = simplegui._load_local_sound("music.ogg")
 frame = simplegui.create_frame("Papaya Racers", DISPLAYW, DISPLAYH)
 frame.set_mouseclick_handler(clickMainMenu)
 enterMainMenu()#automatically passes on the canvas

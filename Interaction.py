@@ -15,6 +15,7 @@ class Interaction:
 
     def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs,bombs,papaya ,twoPlayer):
         self.canvW = 1000
+        self.bombs = bombs
         self.uCar = usr_car
         self.uCar2 = usrCar2
         print(twoPlayer)
@@ -43,6 +44,9 @@ class Interaction:
         self.crashed = False
         self.explosion = False
         self.papaya=papaya
+        self.exp = simplegui._load_local_sound("explode.ogg")
+        self.fire = simplegui._load_local_sound("missile.ogg")
+        self.crash = simplegui._load_local_sound("crash.ogg")
 
     def passBack(self, bg):
         self.bg = bg
@@ -68,6 +72,8 @@ class Interaction:
 
 
     def update(self):
+        
+
         # Check for wall collision first
         if self.kbd.up:
             self.uCar.rotator(False)
@@ -100,6 +106,8 @@ class Interaction:
                 missile = Weapon(Vector((self.uCar.pos.x + self.uCar.frameWidth / 2, self.uCar.pos.y)),
                                  Vector((5, self.uCar.vel.y)), image, 4, 4)
                 self.weapons.append(missile)
+
+                self.fire.play()
                 self.firingCount += 1
         else:
             self.firingCount = 0
@@ -136,6 +144,8 @@ class Interaction:
                     missile = Weapon(Vector((self.uCar2.pos.x + self.uCar2.frameWidth / 2, self.uCar2.pos.y)),
                                  Vector((5, self.uCar2.vel.y)), image, 4, 4)
                     self.weapons.append(missile)
+
+                    self.fire.play()
                     self.firingCount2 += 1
             else:
                 self.firingCount2 = 0
@@ -144,6 +154,13 @@ class Interaction:
         for x in self.cars:
             for i in x.corners:
                 for j in x.offsets:
+
+                    for b in self.bombs:
+                        if b.hit(x):
+                           self.removeLife(x)
+                           self.bombs.remove(b)
+                           self.exp.play()
+                           x.update()
 
                     for v in self.papaya:
                         if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
@@ -159,6 +176,8 @@ class Interaction:
                         # x.lives = 0
                         x.pos = Vector((50, 337))
                         self.removeLife(x)
+                        crash = simplegui._load_local_sound("crash.ogg")
+                        crash.play()
 
                         x.update()
                         break
@@ -172,6 +191,8 @@ class Interaction:
                         # break
 
                         self.removeLife(x)
+
+                        self.crash.play()
 
                         x.update()
                         break
@@ -187,6 +208,8 @@ class Interaction:
                             self.crashed = True
                             self.removeLife(x)  # Register car hit with
                             v.animateOnce()
+
+                            self.crash.play()
                             self.obstacles.remove(v)
                             x.update()
 
@@ -200,7 +223,8 @@ class Interaction:
                     if i.y < 75 + self.w1.border or j.y < 75 + self.w1.border:
                         if self.inCollision == False:
                             x.animate = True
-                            print("Rocket hitting top wall")
+
+                            self.exp.play()
 
                             self.inCollision = True
 
@@ -211,6 +235,8 @@ class Interaction:
                         if not self.inCollision:
                             x.animate = True
                             print("Rocket hitting bottom wall")
+
+                            self.exp.play()
                             self.inCollision = True
                     else:
                         self.inCollision = False
@@ -219,6 +245,8 @@ class Interaction:
                         if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
                             if i.y > v.offT.y and i.y < v.offB.y or j.y > v.offT.y and j.y < v.offB.y:
                                 print(" Rocket - Obstacle hit")
+
+                                self.exp.play()
                                 self.obstacles.remove(v)
                                 x.animate = True
 
