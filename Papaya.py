@@ -66,8 +66,9 @@ treeImg = simplegui.load_image("https://i.imgur.com/pLxOKWq.png")
 global tree1, tree2
 tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
 tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
-global interaction
-interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, bombs, twoPlayer)
+interaction = None
+
+
 #interaction = Interaction(userCar, kbd)
 
 
@@ -84,8 +85,13 @@ def draw(canvas):
         arrayButton[x].draw(canvas)
 
 def twoPlayers():
-    global twoPlayer
-    interaction.twoPlayer = True
+    global interaction
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, True)
+    enter_level_select()
+
+def onePlayers():
+    global interaction
+    interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, False)
     enter_level_select()
 
 def clickPlayerSelect(pos):
@@ -152,12 +158,13 @@ def updateAllElements(canvas):
     userCar.update()
     if interaction.explosion:
         pass #  Update Explosion here
-    if interaction.twoPlayer:
+    if interaction.ytwoPlayer:
         userCar2.update()
     interaction.update()
     Papaya.update()
-    if userCar.c_health_status == 0 or userCar2.c_health_status == 0 and userCar.c_health_status == 0:
-        print("Game over")
+    if interaction.twoPlayer and (userCar.c_health_status==0 and userCar2.c_health_status==0):
+        gameOver()
+    if (interaction.twoPlayer == False) and userCar.c_health_status==0:
         gameOver()
 
 def enterPlayerSelect():
@@ -331,7 +338,7 @@ help = Button("https://i.imgur.com/6OfeKop.png", (470, 450), enter_help)
 quit = Button("https://i.imgur.com/zSSFt11.png", (820,450), quit)
 arrayButton = [start, help, quit]
 
-onePlayer = Button("https://i.imgur.com/FlJvii8.png", (120, 450), enter_level_select)
+onePlayer = Button("https://i.imgur.com/FlJvii8.png", (120, 450), onePlayers)
 twoPlayerB = Button("https://i.imgur.com/deyd3aW.png", (820, 450), twoPlayers)
 playerButton = [onePlayer, twoPlayerB]
 

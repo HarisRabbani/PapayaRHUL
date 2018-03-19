@@ -13,16 +13,18 @@ import random
 
 class Interaction:
 
-    def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs,bombs , twoPlayer):
+    def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs, twoPlayer):
         self.canvW = 1000
         self.uCar = usr_car
         self.uCar2 = usrCar2
+        print(twoPlayer)
         self.twoPlayer = twoPlayer
         if twoPlayer:
             self.cars = [self.uCar, self.uCar2]
         else:
             self.cars = [self.uCar]
         self.w1 = w1
+        print(len(self.cars))
         self.bg = None
         self.obstacles = obs
         self.w2 = w2
@@ -33,7 +35,7 @@ class Interaction:
         self.touchPapaya = False
         self.offScreen = False  # WHEN TRUE - GAME SHOULD END
         self.weapons = []
-        self.bombs = bombs
+        self.bombs = None
         self.walls = [w1, w2]
         self.inCollision = False
         self.firingCount = 0
@@ -102,6 +104,7 @@ class Interaction:
             self.firingCount = 0
 
         if self.twoPlayer:
+            print("HEREEHBrfhebvfjhbsdfbgs")
             if self.kbd.w:
                 self.uCar2.rotator(False)
             if self.kbd.s:
@@ -166,11 +169,7 @@ class Interaction:
 
                     # For every obstacle
 
-                for b in self.bombs:
-                    if b.hit(x):
-                        self.removeLife(x)
-                        self.bombs.remove(b)
-                        x.update()
+
 
                 for v in self.obstacles:
                     if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
