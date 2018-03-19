@@ -55,6 +55,9 @@ bg = None
 bombs = []
 levelImage = ""
 obstacles = []
+score = 0
+timeElapsed = 0
+frameElapsed = 0
 
 
 kbd = Keyboard()
@@ -64,7 +67,7 @@ global tree1, tree2
 tree1 = Tree(treeImg, 0 + treeImg.get_height() / 2, DISPLAYW)
 tree2 = Tree(treeImg, DISPLAYH - treeImg.get_height() / 2, DISPLAYW)
 global interaction
-interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, twoPlayer)
+interaction = Interaction(userCar, userCar2, kbd, [tree1, tree2], w1, w2, obstacles, bombs, twoPlayer)
 #interaction = Interaction(userCar, kbd)
 
 
@@ -101,7 +104,23 @@ def clickWelcomeScreen(pos):
     if welcomeScreenGo.contains(pos):
         welcomeScreenGo.clickBtn()
 
+def gameOver():
+    stopTimers()
+    # STOP UPDATING EVERYTHING HERE
+    finalScore = (userCar.papayaCollected + userCar2.papayaCollected) * score
+    finalTime = timeElapsed
+    # Display Score, final score, display time elapsed etc, display papaya picked.
+    # Restart Game by entering welcome screen - OR - Enter main menu --> Add this code
+
+def drawText(canvas):
+    print("here")
+    canvas.draw_text("Score: " + str(score), (DISPLAYW/2, 15), 18, "Black", "monospace")
+    canvas.draw_text("Speed: " + str(abs(tree1.vel.x)), (DISPLAYW/2, 30), 18, "Black", "monospace")
+    canvas.draw_text("Time elapsed: " + str(timeElapsed) + " s", (DISPLAYW/2, 50), 18, "Black", "monospace")
+
+
 def drawAllElements(canvas):
+
     bg.draw(canvas)
     tree1.draw(canvas)
     tree2.draw(canvas)
@@ -110,19 +129,32 @@ def drawAllElements(canvas):
     interaction.draw(canvas)
     Papaya.draw(canvas)
     userCar.draw(canvas)
+    if interaction.explosion:
+        pass #  Draw explosion here
     if interaction.twoPlayer:
         userCar2.draw(canvas)
+    drawText(canvas)
 
 def updateAllElements(canvas):
+    global frameElapsed, timeElapsed, score
+    frameElapsed += 1
+    score += 1
+    if frameElapsed % 60 == 0:
+        timeElapsed += 1
     bg.update()
     interaction.update()
     tree1.update()
     tree2.update()
     userCar.update()
+    if interaction.explosion:
+        pass #  Update Explosion here
     if interaction.twoPlayer:
         userCar2.update()
     interaction.update()
     Papaya.update()
+    if userCar.c_health_status == 0 or userCar2.c_health_status == 0 and userCar.c_health_status == 0:
+        print("Game over")
+        gameOver()
 
 def enterPlayerSelect():
     frame.set_mouseclick_handler(clickPlayerSelect)
@@ -135,10 +167,11 @@ def drawWelcomeScreen(canvas):
 def enter_game():
     interaction.passBack(bg)
     frame.set_draw_handler(drawGame)
+    startTimers()
 
 
 welcomeScreenGo = Button("https://i.imgur.com/EuhSFX1.jpg", (500, 500), enter_game)
-Papaya=PapayaPick(papayaImg,Vector((random.randrange(300,950),random.randrange(150,525))),(papayaImg.get_width()),papayaImg.get_height())
+Papaya=PapayaPick(papayaImg,Vector((random.randrange(300,950),random.randrange(150,525))),(papayaImg.get_width()),papayaImg.get_height(), tree1.vel)
 
 #parameter passed in as canvas
 def drawGame(canvas):
@@ -249,6 +282,15 @@ def enter_level_select():
 def quit():
     exit(0)
 
+def startTimers():
+    timer.start()
+    obstacleSpawn.start()
+    bombSpawn.start()
+
+def stopTimers():
+    timer.stop()
+    obstacleSpawn.stop()
+    bombSpawn.stop()
 
 def enter_level1():
     bgImage = simplegui.load_image("https://i.imgur.com/erXGov3.png")
@@ -257,6 +299,8 @@ def enter_level1():
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
+
+
 
 def enter_level2():
     bgImage = simplegui.load_image("https://i.imgur.com/9TUjah2.png")
@@ -267,6 +311,7 @@ def enter_level2():
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
 
+
 def enter_level3():
     bgImage = simplegui.load_image("https://i.imgur.com/AljXcD9.png")
     global bg
@@ -274,6 +319,7 @@ def enter_level3():
     interaction.passBack(bg)
     frame.set_mouseclick_handler(clickWelcomeScreen)
     frame.set_draw_handler(drawWelcomeScreen)
+
 
 def enterMainMenu():
     frame.set_mouseclick_handler(clickMainMenu)
@@ -294,9 +340,7 @@ enterMainMenu()#automatically passes on the canvas
 frame.set_keydown_handler(kbd.keyDown)
 frame.set_keyup_handler(kbd.keyUp)
 timer = simplegui.create_timer(5000, timer_handler)
-timer.start()
 obstacleSpawn = simplegui.create_timer(4500, spawnObstacle)
-obstacleSpawn.start()
 bombSpawn = simplegui.create_timer(6000, spawnBomb)
-bombSpawn.start()
+
 frame.start()

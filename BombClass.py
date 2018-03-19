@@ -10,14 +10,14 @@ width = 400
 height = 400 
 tick = 0
 #((self.img.get_height())/2),((self.img.get_width())/2)    self.img.get_height,self.img.get_width    
-class Bomb():
+class Bomb(Sprite):
    
     def __init__(self, x):
         self.k = random.randrange(500, 1200)
         self.pos = Vector((self.k, 0))
-        self.vel = Vector((random.randint(-2, int(x)), random.randint(2, 4)))
+        self.vel = Vector((random.randint(-4, -2), random.randint(2, 4)))
         self.sprite = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Image_bomb.png') 
-        self.image = simplegui.load_image('http://personal.rhul.ac.uk/zeac/084/Image_bomb_single.jpeg')
+        self.image = simplegui.load_image('https://i.imgur.com/AD5CLP4.png')
         self.width = 1440 
         self.height = 1400 
         self.rows = 5 
@@ -30,13 +30,14 @@ class Bomb():
         self.canvasY = self.height/2 
         self.dimX = 100 #Size of image/sprite on the canvas
         self.dimY = 100 
-        self.frameIndex = [5, 4] 
+        self.frameIndex = [5, 4]
+
 
     def draw(self, canvas): 
         if(self.pos.y<=600):
             canvas.draw_image(self.image,
-                          (218/2,224/2),
-                          (218,224),
+                          (97/2,100/2),
+                          (97,100),
                           self.pos.getP(),
                           (self.dimX,self.dimY))
             
@@ -58,6 +59,17 @@ class Bomb():
         self.pos.add(self.vel)
 
         self.nextFrame()
+
+    def hit(self, car):
+        T = Vector((self.pos.x, self.pos.y - self.frameHeight / 2))
+        B = Vector((self.pos.x, self.pos.y + self.frameHeight / 2))
+        R = Vector((self.pos.x + self.frameWidth / 2, self.pos.y))
+        L = Vector((self.pos.x - self.frameWidth / 2, self.pos.y))
+
+        for i in car.offsets:
+            if i.x > L.x and i.x < R.x:
+                 if i.y > T.y and i.y < B.y:
+                     return True
 
   
 

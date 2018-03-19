@@ -57,20 +57,13 @@ class Sprite(Offset):
         self.corners[3] = bL
 
     def update(self):  # Make edits to this to fix the bug
-        if (self.animate == False) or (self.update_x() and self.update_y()):
-            self.frameIndex[0] = 0
-            self.frameIndex[1] = 0
-            self.update_x()
-            self.update_y()
-
-
-        else:
-            self.frameElapsed += 1
-            self.frameIndex[0] = (self.frameIndex[0] + 1) % self.column
-            self.update_x()
-            if self.frameIndex[0] == 0:
-                self.frameIndex[1] = self.frameIndex[1] + 1
-                self.update_y()
+            if self.animate:
+                self.frameElapsed += 1
+                self.frameIndex[0] = (self.frameIndex[0] + 1) % self.column
+                self.update_x()
+                if self.frameIndex[0] == 0:
+                    self.frameIndex[1] = self.frameIndex[1] + 1
+                    self.update_y()
 
 
     def maxFrame(self):
@@ -85,11 +78,11 @@ class Sprite(Offset):
     def update_x(self):
         if self.frameIndex[0] == self.column-1:
             return True
-        else:
-            self.x = self.frameWidth * self.frameIndex[0] + self.frameCenterX
+
+        self.x = self.frameWidth * self.frameIndex[0] + self.frameCenterX
 
     def update_y(self):
         if self.frameIndex[1] == self.column-1:
             return True
-        else:
-            self.y = self.frameHeight * self.frameIndex[1] + self.frameCenterY
+
+        self.y = self.frameHeight * self.frameIndex[1] + self.frameCenterY

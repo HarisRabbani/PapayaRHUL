@@ -7,10 +7,10 @@ from Vector import Vector
 class PapayaPick:
 
 
-    def __init__(self,img,pos,width,height):
+    def __init__(self,img,pos,width,height, vel):
         self.img = img
         self.pos=pos
-        self.vel=Vector((-2,0))
+        self.vel=vel
         self.width=width
         self.height=height
 

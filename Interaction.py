@@ -13,7 +13,7 @@ import random
 
 class Interaction:
 
-    def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs, twoPlayer):
+    def __init__(self, usr_car, usrCar2, kbd, trees, w1, w2, obs,bombs , twoPlayer):
         self.canvW = 1000
         self.uCar = usr_car
         self.uCar2 = usrCar2
@@ -33,10 +33,13 @@ class Interaction:
         self.touchPapaya = False
         self.offScreen = False  # WHEN TRUE - GAME SHOULD END
         self.weapons = []
+        self.bombs = bombs
         self.walls = [w1, w2]
         self.inCollision = False
         self.firingCount = 0
         self.firingCount2 = 0
+        self.crashed = False
+        self.explosion = False
 
     def passBack(self, bg):
         self.bg = bg
@@ -46,8 +49,11 @@ class Interaction:
             i.update()
             i.draw(canvas)
 
+
+
     def removeLife(self, car):
         self.bg.vel = Vector((-1, 0))
+        self.explosion = True
         for i in self.trees:
             i.vel = Vector((-1, 0))
         if car.c_health_status == 3:
@@ -160,14 +166,20 @@ class Interaction:
 
                     # For every obstacle
 
+                for b in self.bombs:
+                    if b.hit(x):
+                        self.removeLife(x)
+                        self.bombs.remove(b)
+                        x.update()
+
                 for v in self.obstacles:
                     if i.x > v.offL.x and i.x < v.offR.x or j.x > v.offL.x and j.x < v.offR.x:
                         if i.y > v.offT.y and i.y < v.offB.y or j.y > v.offT.y and j.y < v.offB.y:
+                            self.crashed = True
                             self.removeLife(x)  # Register car hit with
+                            v.animateOnce()
                             self.obstacles.remove(v)
                             x.update()
-                            v.animate = True
-                            print("Car hitting obstacle")
 
         for x in self.weapons:
             if x.pos.x > self.canvW or x.frameElapsed > x.row * x.column:  # Remove if gone off or animated once.

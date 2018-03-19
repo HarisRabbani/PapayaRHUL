@@ -10,15 +10,20 @@ class Obstacle(Sprite):
         self.pos = pos
         self.vel = vel
         self.frameCount = 0
+        self.removeSelf = False
 
+    def animateOnce(self):
+        self.animate = True
+        while self.frameElapsed < self.row * self.column:
+            super().update()
+        self.animate = False
 
     def update(self):
-        if self.frameCount > 180:
-            self.animate = False
-        if self.animate:
-            self.frameCount += 1
 
-            if self.frameCount % 20 == 0:
+        if self.animate:
+
+            self.frameCount += 1
+            if self.frameCount % 5 == 0:
                 super().update()
         else:
             super().update()
